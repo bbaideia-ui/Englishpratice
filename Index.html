@@ -1,0 +1,459 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#f7f6f2">
+  <meta name="description" content="Pratique inglês em sessões curtas, guarde suas dúvidas e revise no momento certo.">
+  <title>Inglês em Pequenos Passos</title>
+  <style>
+:root{--paper:#f7f6f2;--surface:#fff;--ink:#202c2b;--muted:#77827f;--line:#e8e9e2;--green:#17675d;--green-soft:#e5f2ec;--orange:#dc8650;--yellow:#f1c55f;--rose:#f7eae6;--shadow:0 14px 38px #283a3210;--radius:18px}
+    *{box-sizing:border-box}body{margin:0;background:var(--paper);color:var(--ink);font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;font-size:15px;line-height:1.5}button,input,select,textarea{font:inherit}button{cursor:pointer}button:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-visible{outline:3px solid #dc865077;outline-offset:2px}.shell{min-height:100vh;display:grid;grid-template-columns:238px minmax(0,1fr)}.sidebar{padding:26px 16px;border-right:1px solid var(--line);background:#fbfaf7;display:flex;flex-direction:column;gap:28px}.brand{display:flex;align-items:center;gap:11px;padding:0 8px}.brandmark{width:37px;height:37px;border-radius:13px;background:var(--green);display:grid;place-items:center;color:#fff;font-weight:800;font-size:19px}.brand strong{display:block;font-size:14px;letter-spacing:-.25px}.brand small{color:var(--muted);font-size:11px}.nav{display:grid;gap:5px}.nav button{border:0;background:transparent;color:#697572;text-align:left;padding:11px 12px;border-radius:12px;display:flex;gap:11px;align-items:center;font-size:13px}.nav button:hover,.nav button.active{background:var(--green-soft);color:var(--green);font-weight:650}.nav .ico{width:19px;text-align:center;font-size:16px}.sidebar-note{margin-top:auto;background:#eff3eb;border-radius:16px;padding:15px;color:#4a5a53;font-size:12px}.sidebar-note b{display:block;color:var(--green);font-size:13px;margin-bottom:5px}.sidebar-bottom{padding:0 7px;color:var(--muted);font-size:11px}.main{max-width:1300px;width:100%;padding:30px clamp(18px,4vw,58px) 60px;margin:0 auto}.topbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:27px}.crumb{font-size:12px;color:var(--muted)}.date-pill{border:1px solid var(--line);background:#fff;border-radius:99px;padding:7px 12px;color:#66716e;font-size:12px}.page{display:none}.page.active{display:block}.welcome{background:var(--green);color:#fff;border-radius:24px;padding:30px 32px;display:flex;align-items:center;justify-content:space-between;gap:20px;position:relative;overflow:hidden;box-shadow:var(--shadow)}.welcome:after{content:"";position:absolute;width:230px;height:230px;right:10%;top:-140px;border:1px solid #ffffff26;border-radius:50%;box-shadow:0 0 0 32px #ffffff0a,0 0 0 65px #ffffff08}.welcome h1{font-size:clamp(25px,3vw,36px);line-height:1.12;margin:5px 0 9px;letter-spacing:-1.25px;max-width:610px}.welcome p{margin:0;color:#d8e9e2;font-size:14px}.eyebrow{text-transform:uppercase;letter-spacing:1.4px;font-size:10px;font-weight:750;color:#bddecf}.welcome .btn{position:relative;z-index:1;white-space:nowrap;background:#f0c565;color:#2f392f}.btn{border:0;border-radius:11px;padding:11px 15px;font-weight:700;font-size:13px;background:var(--green);color:#fff;transition:.15s}.btn:hover{filter:brightness(.96);transform:translateY(-1px)}.btn.secondary{background:#edf3ef;color:var(--green)}.btn.ghost{background:transparent;color:var(--green);border:1px solid #dce5df}.btn.small{padding:8px 11px;font-size:12px}.btn.danger{background:#f8eeea;color:#aa573c}.stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:13px;margin:18px 0 25px}.stat{padding:17px 19px;background:var(--surface);border:1px solid var(--line);border-radius:16px;display:flex;gap:13px;align-items:center}.stat-icon{width:38px;height:38px;border-radius:12px;background:#f4f1e8;display:grid;place-items:center;font-size:17px}.stat:nth-child(2) .stat-icon{background:#f8e9e2}.stat:nth-child(3) .stat-icon{background:#e8f1e9}.stat small{display:block;color:var(--muted);font-size:11px}.stat strong{font-size:19px;letter-spacing:-.5px}.section-head{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;margin:27px 0 13px}.section-head h2{margin:0;font-size:19px;letter-spacing:-.5px}.section-head p{margin:3px 0 0;color:var(--muted);font-size:12px}.linkbtn{border:0;background:none;color:var(--green);font-weight:700;font-size:12px}.grid2{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(260px,.7fr);gap:16px}.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:19px;box-shadow:0 4px 18px #263a3206}.card h3{font-size:15px;margin:0 0 5px}.card p{color:var(--muted);font-size:12px;margin:0}.session-card{background:#fffdf8}.session-row{display:flex;justify-content:space-between;gap:15px;align-items:flex-start}.tag{display:inline-flex;border-radius:7px;padding:4px 8px;background:#f5f1e8;color:#78643f;font-size:10px;font-weight:700}.tag.green{background:#e8f3ee;color:var(--green)}.tag.orange{background:#f8e8df;color:#a85d37}.session-card h3{margin-top:12px;font-size:17px}.session-card p{max-width:480px}.session-actions{display:flex;align-items:center;gap:10px;margin-top:18px}.duration{color:var(--muted);font-size:11px}.topic-list{display:grid;gap:13px;margin-top:13px}.topic-line{display:grid;grid-template-columns:82px 1fr 30px;gap:10px;align-items:center;font-size:11px}.bar{height:7px;background:#eef0eb;border-radius:99px;overflow:hidden}.bar i{display:block;height:100%;background:var(--green);border-radius:99px;min-width:0}.topic-line strong{text-align:right;color:#61706b;font-size:11px}.template-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.template{padding:15px;border:1px solid var(--line);border-radius:15px;background:white;cursor:pointer;text-align:left;transition:.15s}.template:hover{border-color:#b6d0c4;transform:translateY(-2px);box-shadow:var(--shadow)}.template .emoji{font-size:19px}.template b{display:block;font-size:13px;margin:7px 0 3px}.template small{color:var(--muted);font-size:11px}.page-title{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;margin-bottom:22px}.page-title h1{font-size:27px;letter-spacing:-.8px;margin:0}.page-title p{font-size:13px;color:var(--muted);margin:4px 0 0}.toolbar{display:flex;gap:8px;flex-wrap:wrap}.field{display:grid;gap:6px;margin:13px 0}.field label{font-size:11px;font-weight:700;color:#52605b}.field input,.field textarea,.field select{width:100%;border:1px solid var(--line);border-radius:10px;background:#fff;padding:10px 11px;color:var(--ink)}.field textarea{resize:vertical;min-height:90px}.select-row{display:flex;gap:9px;align-items:center}.select-row select{border:1px solid var(--line);border-radius:9px;background:white;padding:8px;color:var(--ink);font-size:12px}.exercise{max-width:760px;margin:0 auto}.exercise-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}.exercise-progress{height:6px;background:#e8ebe5;border-radius:99px;margin-bottom:21px}.exercise-progress i{display:block;height:100%;background:var(--orange);border-radius:99px;transition:width .25s}.exercise-box{padding:clamp(19px,4vw,34px);border-radius:22px;background:#fff;border:1px solid var(--line);box-shadow:var(--shadow)}.exercise-box h2{font-size:clamp(21px,3vw,29px);line-height:1.25;margin:15px 0 8px;letter-spacing:-.7px}.prompt{background:#f7f6f1;border-radius:12px;padding:13px 15px;margin:15px 0;font-size:14px}.hint{font-size:12px;color:var(--muted);margin:8px 0}.exercise-box textarea{width:100%;min-height:91px;border:1px solid var(--line);border-radius:12px;padding:12px;resize:vertical}.exercise-controls{display:flex;justify-content:space-between;gap:10px;align-items:center;margin-top:15px}.feedback{margin-top:13px;padding:13px 15px;border-radius:12px;font-size:13px;display:none}.feedback.show{display:block}.feedback.ok{background:#eaf4ed;color:#25634c}.feedback.no{background:#fcf0ea;color:#914e39}.answer{font-weight:700;margin-top:5px}.mini-dialogue{display:grid;gap:9px;margin:15px 0}.bubble{padding:10px 12px;border-radius:12px;background:#f3f5f0;width:max-content;max-width:88%;font-size:13px}.bubble.you{background:#e7f1eb;margin-left:auto}.bubble small{display:block;font-size:10px;color:var(--muted)}.pronunciation{border:1px dashed #cbd7cf;background:#f5f9f6;padding:13px;border-radius:12px;margin-top:13px}.pronunciation .phonetic{font-size:13px;color:#49665a;margin-top:2px}.pronunciation .explain{font-size:11px;color:var(--muted);margin-top:5px}.review-list,.error-list,.word-list{display:grid;gap:10px}.review-item,.error-item,.word-item{display:flex;justify-content:space-between;gap:12px;align-items:center;padding:14px;border:1px solid var(--line);border-radius:13px;background:#fff}.review-item .en,.word-item .en{font-weight:750;font-size:15px}.review-item .pt,.word-item .pt{color:var(--muted);font-size:12px}.review-item .meta,.word-item .meta{display:flex;gap:6px;flex-wrap:wrap;margin-top:6px}.review-actions{display:flex;gap:6px;flex-shrink:0}.error-item{align-items:flex-start}.error-item .mistake{color:#ab553d;font-size:12px}.error-item .correct{font-size:12px;color:#386853}.badge{font-size:10px;padding:4px 7px;border-radius:7px;background:#f2f1eb;color:#65716b}.empty{padding:28px;text-align:center;color:var(--muted);border:1px dashed #dce2da;border-radius:15px}.empty b{display:block;color:var(--ink);margin-bottom:4px}.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:0 14px}.form-grid .wide{grid-column:1/-1}.progress-cards{display:grid;grid-template-columns:repeat(2,1fr);gap:11px}.progress-card{padding:15px;border:1px solid var(--line);border-radius:13px}.progress-card .title{display:flex;justify-content:space-between;font-size:12px;font-weight:700}.progress-card .caption{font-size:10px;color:var(--muted);margin:4px 0 9px}.notice{padding:12px 14px;border-radius:11px;background:#f3f5ef;color:#66736d;font-size:11px;margin-top:16px}.toasts{position:fixed;bottom:18px;right:18px;z-index:20;display:grid;gap:8px}.toast{background:#243c35;color:#fff;padding:11px 15px;border-radius:11px;box-shadow:var(--shadow);font-size:12px;animation:fade .25s}@keyframes fade{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:none}}.mobile-menu{display:none}
+    @media(max-width:850px){.shell{grid-template-columns:1fr}.sidebar{position:fixed;z-index:10;inset:auto 0 0;padding:6px 8px;background:#fff;border:0;border-top:1px solid var(--line);display:block}.brand,.sidebar-note,.sidebar-bottom{display:none}.nav{display:flex;justify-content:space-around;gap:2px}.nav button{flex-direction:column;gap:1px;text-align:center;padding:7px 4px;font-size:9px;flex:1}.nav .ico{font-size:16px}.main{padding:18px 16px 95px}.topbar{margin-bottom:17px}.welcome{padding:23px 22px}.welcome .btn{font-size:11px;padding:9px}.grid2{grid-template-columns:1fr}.template-grid{grid-template-columns:repeat(2,1fr)}.stats{gap:8px}.stat{padding:12px 10px;gap:8px}.stat-icon{width:31px;height:31px}.stat strong{font-size:16px}.stat small{font-size:9px}.page-title h1{font-size:23px}}
+    @media(max-width:520px){.welcome{display:block}.welcome .btn{margin-top:17px}.stats{grid-template-columns:repeat(3,1fr)}.template-grid{grid-template-columns:1fr 1fr}.template{padding:12px}.template b{font-size:12px}.form-grid{grid-template-columns:1fr}.form-grid .wide{grid-column:auto}.exercise-controls{align-items:stretch}.exercise-controls .btn{flex:1}.toolbar{width:100%}.page-title{display:block}.page-title .toolbar{margin-top:12px}.review-item,.word-item{align-items:flex-start}.review-actions{flex-direction:column}}
+</style>
+</head>
+<body>
+<div class="shell">
+  <aside class="sidebar">
+    <div class="brand"><div class="brandmark">a</div><div><strong>Pequenos Passos</strong><small>prática de inglês</small></div></div>
+    <nav class="nav" aria-label="Navegação principal">
+      <button class="active" data-page="inicio"><span class="ico">⌂</span>Início</button>
+      <button data-page="praticar"><span class="ico">◉</span>Praticar</button>
+      <button data-page="revisar"><span class="ico">↻</span>Revisar <span id="review-nav-count"></span></button>
+      <button data-page="caderno"><span class="ico">▤</span>Meu caderno</button>
+      <button data-page="progresso"><span class="ico">↗</span>Progresso</button>
+      <button data-page="adicionar"><span class="ico">＋</span>Adicionar exercício</button>
+    </nav>
+    <div class="sidebar-note"><b>Um pouco já conta.</b>Uma conversa curta por dia cria confiança. Faça no seu ritmo; 5 minutos são suficientes.</div>
+    <div class="sidebar-bottom">Seu espaço de prática pessoal</div>
+  </aside>
+  <main class="main">
+    <div class="topbar"><div class="crumb">INGLÊS EM PEQUENOS PASSOS <span style="padding:0 6px;color:#bdc4bf">/</span> <span id="crumb-current">Início</span></div><div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap"><button id="language-toggle" class="btn small ghost" type="button" lang="en">English</button><div class="date-pill" id="today-date"></div></div></div>
+    <section id="page-inicio" class="page active">
+      <div class="welcome"><div><div class="eyebrow">SEU CANTINHO DE INGLÊS</div><h1>Seu inglês, um pouco por dia.</h1><p>Pratique situações reais, guarde o que quer lembrar e volte amanhã sem começar do zero.</p></div><button class="btn" onclick="startSession()">Começar 5 minutos <span aria-hidden="true">→</span></button></div>
+      <div class="stats">
+        <div class="stat"><div class="stat-icon">◷</div><div><small>Revisões para hoje</small><strong id="stat-due">0</strong></div></div>
+        <div class="stat"><div class="stat-icon">✦</div><div><small>Dias de sequência</small><strong id="stat-streak">0</strong></div></div>
+        <div class="stat"><div class="stat-icon">✓</div><div><small>Exercícios feitos</small><strong id="stat-done">0</strong></div></div>
+      </div>
+      <div class="section-head"><div><h2>Uma sessão para hoje</h2><p>Curta, prática e no seu nível.</p></div><button class="linkbtn" onclick="go('praticar')">Escolher tema →</button></div>
+      <div class="grid2">
+        <div class="card session-card"><div class="session-row"><span class="tag green" id="daily-tag">CONVERSA DO DIA A DIA</span><span class="duration">⏱ cerca de 5 min</span></div><h3 id="daily-title">Pedindo um café para viagem</h3><p id="daily-subtitle">Pratique uma situação comum: pedir, confirmar e agradecer.</p><div class="session-actions"><button class="btn small" onclick="startSession()">Iniciar sessão</button><button class="btn small secondary" id="daily-listen" onclick="speakCurrent()" disabled>🔊 Ouvir frase</button></div></div>
+        <div class="card"><h3>Seu caminho por temas</h3><p>Veja o que você já vem praticando.</p><div class="topic-list" id="home-topics"></div></div>
+      </div>
+      <div class="section-head"><div><h2>Pratique uma situação</h2><p>Escolha um tema para uma sessão curta.</p></div></div>
+      <div class="template-grid" id="templates-home"></div>
+      <div class="section-head"><div><h2>Para continuar de onde parou</h2><p>Seus erros e expressões salvos voltam para revisão.</p></div><button class="linkbtn" onclick="go('revisar')">Abrir revisões →</button></div>
+      <div id="home-review-preview"></div>
+    </section>
+    <section id="page-praticar" class="page">
+      <div class="page-title"><div><h1>Hora de praticar</h1><p>Escolha um tema e faça alguns exercícios. Pode parar quando quiser.</p></div><div class="select-row"><select id="topic-filter" aria-label="Filtrar por tema"></select><select id="level-filter" aria-label="Selecionar nível"><option value="todos">Todos os níveis</option><option>Iniciante</option><option>Intermediário</option><option>Desafio</option></select></div></div>
+      <div class="template-grid" id="templates-practice"></div>
+      <div id="exercise-host" style="margin-top:20px"></div>
+    </section>
+    <section id="page-revisar" class="page">
+      <div class="page-title"><div><h1>Revisão no momento certo</h1><p>As expressões e os erros retornam em intervalos maiores à medida que ficam fáceis.</p></div><button class="btn small secondary" onclick="reviewAllErrors()">Treinar meus erros</button></div>
+      <div class="card" style="margin-bottom:16px"><div class="section-head" style="margin:0 0 12px"><div><h2 style="font-size:15px">Para revisar hoje</h2><p>Marque como fácil ou difícil para ajustar a próxima revisão.</p></div><span class="tag orange" id="due-label">0 itens</span></div><div class="review-list" id="review-list"></div></div>
+      <div class="card"><div class="section-head" style="margin:0 0 12px"><div><h2 style="font-size:15px">Erros que estou trabalhando</h2><p>As correções ficam aqui para você tentar de novo.</p></div><span class="tag" id="error-label">0 registros</span></div><div class="error-list" id="error-list"></div></div>
+    </section>
+    <section id="page-caderno" class="page">
+      <div class="page-title"><div><h1>Meu caderno</h1><p>Palavras, frases e mensagens que você quer guardar.</p></div><div class="toolbar"><button class="btn small ghost" onclick="exportData()">Baixar backup</button><label class="btn small secondary" for="import-file">Restaurar backup</label><input id="import-file" type="file" accept="application/json" hidden onchange="importData(event)"></div></div>
+      <div class="card" style="margin-bottom:16px"><h3>Guardar uma expressão</h3><p>Ela entra na revisão espaçada. A pronúncia aproximada é opcional.</p><form id="word-form" onsubmit="saveWord(event)"><div class="form-grid"><div class="field"><label for="word-en">Palavra ou frase em inglês</label><input id="word-en" required placeholder="I would like a coffee, please."></div><div class="field"><label for="word-pt">Significado em português</label><input id="word-pt" required placeholder="Eu gostaria de um café, por favor."></div><div class="field"><label for="word-pron">Pronúncia aproximada (opcional)</label><input id="word-pron" placeholder="ai uúd láik â cófi, plíz"></div><div class="field"><label for="word-topic">Tema</label><input id="word-topic" list="topic-options" placeholder="Conversa do dia a dia"></div><div class="field wide"><label for="word-example">Exemplo de uso (opcional)</label><input id="word-example" placeholder="I would like a coffee to go."></div></div><button class="btn small" type="submit">＋ Guardar no caderno</button></form></div>
+      <div class="section-head"><div><h2>Expressões guardadas</h2><p id="word-count-text">0 itens</p></div><input id="word-search" placeholder="Buscar no caderno…" oninput="renderWords()" style="max-width:220px;padding:8px 10px;border:1px solid var(--line);border-radius:9px;font-size:12px"></div><div id="word-list" class="word-list"></div>
+    </section>
+    <section id="page-progresso" class="page">
+      <div class="page-title"><div><h1>Seu progresso</h1><p>Pequenos avanços se acumulam. Acompanhe a prática por tema.</p></div><button class="btn small ghost" onclick="resetProgress()">Recomeçar os dados</button></div>
+      <div class="stats"><div class="stat"><div class="stat-icon">✓</div><div><small>Respostas corretas</small><strong id="progress-correct">0</strong></div></div><div class="stat"><div class="stat-icon">↻</div><div><small>Revisões concluídas</small><strong id="progress-reviews">0</strong></div></div><div class="stat"><div class="stat-icon">◌</div><div><small>Temas praticados</small><strong id="progress-topics">0</strong></div></div></div>
+      <div class="card"><h3>Prática por tema</h3><p>Proporção de respostas certas nas suas sessões.</p><div id="progress-topics-list" class="progress-cards" style="margin-top:16px"></div></div>
+      <div class="notice">Seus dados são guardados neste navegador. Use “Baixar backup” no caderno para manter uma cópia ou levar o progresso para outro dispositivo.</div>
+    </section>
+    <section id="page-adicionar" class="page">
+      <div class="page-title"><div><h1>Adicionar exercício</h1><p>Inclua uma frase ou situação que você quer praticar depois.</p></div></div>
+      <div class="card" style="max-width:740px"><form id="exercise-form" onsubmit="saveExercise(event)"><div class="form-grid"><div class="field"><label for="new-topic">Tema</label><input id="new-topic" list="topic-options" required placeholder="Ex.: Tecnologia, imigração…"><datalist id="topic-options"></datalist></div><div class="field"><label for="new-level">Nível</label><select id="new-level"><option>Iniciante</option><option>Intermediário</option><option>Desafio</option></select></div><div class="field"><label for="new-kind">Tipo de exercício</label><select id="new-kind"><option value="pt-en">Português → inglês</option><option value="en-pt">Inglês → português</option><option value="conversation">Conversa curta</option></select></div><div class="field wide"><label for="new-prompt">Frase ou pergunta para praticar</label><textarea id="new-prompt" required placeholder="Como você diria em inglês: ‘Eu acabei de enviar o formulário.’"></textarea></div><div class="field"><label for="new-answer">Resposta ou tradução sugerida</label><textarea id="new-answer" required placeholder="I just submitted the form."></textarea></div><div class="field"><label for="new-pron">Pronúncia aproximada (opcional)</label><textarea id="new-pron" placeholder="ai djâst sâb-mí-tid dhâ fórm"></textarea></div><div class="field wide"><label for="new-example">Exemplo ou contexto (opcional)</label><input id="new-example" placeholder="Use ao falar sobre o envio de documentos."></div></div><button type="submit" class="btn">Guardar exercício</button></form></div>
+    </section>
+  </main>
+</div>
+<div class="toasts" id="toasts" aria-live="polite"></div>
+<script>
+const languageKey = 'pequenosPassosLanguage';
+const englishInterface = localStorage.getItem(languageKey) === 'en';
+const translations = new Map(Object.entries({
+  'Inglês em Pequenos Passos': 'English in Small Steps',
+  'INGLÊS EM PEQUENOS PASSOS': 'ENGLISH IN SMALL STEPS',
+  'Pequenos Passos': 'Small Steps',
+  'prática de inglês': 'English practice',
+  'Navegação principal': 'Main navigation',
+  'Início': 'Home',
+  'Praticar': 'Practice',
+  'Revisar': 'Review',
+  'Meu caderno': 'My notebook',
+  'Progresso': 'Progress',
+  'Adicionar exercício': 'Add exercise',
+  'Um pouco já conta.': 'A little practice counts.',
+  'Uma conversa curta por dia cria confiança. Faça no seu ritmo; 5 minutos são suficientes.': 'A short conversation a day builds confidence. Go at your own pace. Five minutes is enough.',
+  'Seu espaço de prática pessoal': 'Your personal practice space',
+  'SEU CANTINHO DE INGLÊS': 'YOUR ENGLISH PRACTICE SPACE',
+  'Seu inglês, um pouco por dia.': 'Practice English a little every day.',
+  'Pratique situações reais, guarde o que quer lembrar e volte amanhã sem começar do zero.': 'Practice real situations, save what you want to remember, and pick up where you left off tomorrow.',
+  'Começar 5 minutos': 'Start 5 minutes',
+  'Revisões para hoje': 'Reviews due today',
+  'Dias de sequência': 'Day streak',
+  'Exercícios feitos': 'Exercises completed',
+  'Uma sessão para hoje': 'A session for today',
+  'Curta, prática e no seu nível.': 'Short, practical, and at your level.',
+  'Escolher tema →': 'Choose a topic →',
+  '⏱ cerca de 5 min': '⏱ about 5 min',
+  'Iniciar sessão': 'Start session',
+  '🔊 Ouvir frase': '🔊 Listen to phrase',
+  'Seu caminho por temas': 'Your progress by topic',
+  'Veja o que você já vem praticando.': 'See what you have been practicing.',
+  'Pratique uma situação': 'Practice a situation',
+  'Escolha um tema para uma sessão curta.': 'Choose a topic for a short session.',
+  'Para continuar de onde parou': 'Pick up where you left off',
+  'Seus erros e expressões salvos voltam para revisão.': 'Your saved mistakes and expressions come back for review.',
+  'Abrir revisões →': 'Open reviews →',
+  'Hora de praticar': 'Time to practice',
+  'Escolha um tema e faça alguns exercícios. Pode parar quando quiser.': 'Choose a topic and do a few exercises. Stop whenever you like.',
+  'Filtrar por tema': 'Filter by topic',
+  'Selecionar nível': 'Select a level',
+  'Todos os temas': 'All topics',
+  'Todos os níveis': 'All levels',
+  'Iniciante': 'Beginner',
+  'Intermediário': 'Intermediate',
+  'Desafio': 'Challenge',
+  'Dia a dia': 'Everyday life',
+  'Conversa do dia a dia': 'Everyday conversation',
+  'CONVERSA DO DIA A DIA': 'EVERYDAY CONVERSATION',
+  'Café, compras, pedidos e conversas curtas.': 'Coffee, shopping, ordering, and short conversations.',
+  'Imigração': 'Immigration',
+  'Formulários, entrevista e situações oficiais.': 'Forms, interviews, and official situations.',
+  'Trabalho': 'Work',
+  'Rotina, colegas, tarefas e comunicação.': 'Routines, coworkers, tasks, and communication.',
+  'Tecnologia': 'Technology',
+  'Dispositivos, aplicativos e solução de problemas.': 'Devices, apps, and troubleshooting.',
+  'Jogos': 'Gaming',
+  'Games, progresso, vídeos e recomendações.': 'Games, progress, videos, and recommendations.',
+  'Mensagens': 'Messages',
+  'Tradução de mensagens': 'Message translation',
+  'Escreva e traduza mensagens naturais.': 'Write and translate natural messages.',
+  'Revisão no momento certo': 'Review at the right time',
+  'As expressões e os erros retornam em intervalos maiores à medida que ficam fáceis.': 'Review expressions and mistakes as they become easier to remember.',
+  'Treinar meus erros': 'Practice my mistakes',
+  'Para revisar hoje': 'Due today',
+  'Marque como fácil ou difícil para ajustar a próxima revisão.': 'Mark each item easy or hard to schedule its next review.',
+  'Erros que estou trabalhando': 'Mistakes I’m working on',
+  'As correções ficam aqui para você tentar de novo.': 'Your corrections stay here so you can try again.',
+  'Palavras, frases e mensagens que você quer guardar.': 'Words, phrases, and messages you want to save.',
+  'Baixar backup': 'Download backup',
+  'Restaurar backup': 'Restore backup',
+  'Guardar uma expressão': 'Save an expression',
+  'Ela entra na revisão espaçada. A pronúncia aproximada é opcional.': 'It goes into spaced review. A pronunciation guide is optional.',
+  'Palavra ou frase em inglês': 'English word or phrase',
+  'Significado em português': 'Meaning in Portuguese',
+  'Pronúncia aproximada (opcional)': 'Pronunciation guide (optional)',
+  'Tema': 'Topic',
+  'Exemplo de uso (opcional)': 'Usage example (optional)',
+  '＋ Guardar no caderno': '＋ Save to notebook',
+  'Expressões guardadas': 'Saved expressions',
+  'Buscar no caderno…': 'Search your notebook…',
+  'Seu progresso': 'Your progress',
+  'Pequenos avanços se acumulam. Acompanhe a prática por tema.': 'Small improvements add up. Track your practice by topic.',
+  'Recomeçar os dados': 'Reset saved data',
+  'Respostas corretas': 'Correct answers',
+  'Revisões concluídas': 'Reviews completed',
+  'Temas praticados': 'Topics practiced',
+  'Prática por tema': 'Practice by topic',
+  'Proporção de respostas certas nas suas sessões.': 'Share of correct answers in your sessions.',
+  'Seus dados são guardados neste navegador. Use “Baixar backup” no caderno para manter uma cópia ou levar o progresso para outro dispositivo.': 'Your data is saved in this browser. Use “Download backup” in your notebook to keep a copy or move your progress to another device.',
+  'Inclua uma frase ou situação que você quer praticar depois.': 'Add a phrase or situation you want to practice later.',
+  'Nível': 'Level',
+  'Tipo de exercício': 'Exercise type',
+  'Português → inglês': 'Portuguese → English',
+  'Inglês → português': 'English → Portuguese',
+  'Conversa curta': 'Short conversation',
+  'Frase ou pergunta para praticar': 'Practice phrase or question',
+  'Resposta ou tradução sugerida': 'Suggested answer or translation',
+  'Exemplo ou contexto (opcional)': 'Example or context (optional)',
+  'Guardar exercício': 'Save exercise',
+  'Sessão concluída': 'Session complete',
+  'Você avançou um pouco hoje. Esse progresso já conta.': 'You made progress today. It counts.',
+  'Voltar ao início': 'Back to home',
+  'Fazer mais uma': 'Start another session',
+  'Responda em voz alta': 'Answer out loud',
+  'CONVERSA CURTA': 'SHORT CONVERSATION',
+  'PASSE PARA PORTUGUÊS': 'TRANSLATE INTO PORTUGUESE',
+  'PASSE PARA INGLÊS': 'TRANSLATE INTO ENGLISH',
+  'VOCÊ': 'YOU',
+  'Ainda sem sessões': 'No sessions yet',
+  'Tente escrever a resposta. Você pode conferir uma sugestão depois.': 'Write your answer. You can check a suggested answer afterward.',
+  '🔊 Ouvir': '🔊 Listen',
+  'Escreva em português…': 'Write in Portuguese…',
+  'Escreva em inglês…': 'Write in English…',
+  'Sua resposta': 'Your answer',
+  'Ver sugestão': 'Show suggested answer',
+  'Pular': 'Skip',
+  'Conferir resposta': 'Check answer',
+  'Pronúncia aproximada': 'Pronunciation guide',
+  'Aproximação para falantes de português; os sons variam por região. Toque em “Ouvir” para escutar a fala do navegador.': 'A guide for Portuguese speakers. Sounds vary by region. Tap “Listen” to hear your browser read it aloud.',
+  'Próximo exercício': 'Next exercise',
+  '✓ Boa! A ideia ficou clara.': '✓ Good job! You got it.',
+  'Quase. Compare sua frase com a sugestão e tente de novo na revisão.': 'Almost. Compare your phrase with the suggestion and try again in review.',
+  'Sugestão:': 'Suggested answer:',
+  'A sugestão:': 'Suggested answer:',
+  'TENTE DE NOVO': 'TRY AGAIN',
+  'REVISÃO': 'REVIEW',
+  'Escreva sua resposta…': 'Write your answer…',
+  'Conferir': 'Check',
+  '✓ Muito bem.': '✓ Well done.',
+  'Ouvir expressão': 'Listen to expression',
+  'Ver resposta': 'Show answer',
+  'Difícil': 'Hard',
+  'Fácil': 'Easy',
+  'Nenhuma expressão vence hoje.': 'No expressions are due today.',
+  'Guarde uma frase no caderno ou aproveite para fazer uma sessão curta.': 'Save a phrase to your notebook or do a short practice session.',
+  'Tentar de novo': 'Try again',
+  'Seu histórico está limpo.': 'No mistakes recorded.',
+  'Quando uma resposta escapar, ela aparece aqui com a correção.': 'Missed answers appear here with a suggested correction.',
+  'Ouvir inglês': 'Listen in English',
+  'Revisar hoje': 'Review today',
+  'Remover': 'Remove',
+  'Seu caderno está esperando por você.': 'Your notebook is empty.',
+  'Adicione uma frase de uma conversa, mensagem ou sessão.': 'Add a phrase from a conversation, message, or session.',
+  'Tudo em dia.': 'You’re up to date.',
+  'Você pode salvar novas expressões ou começar outra prática.': 'Save new expressions or start another session.',
+  'A pessoa do balcão pergunta o que você gostaria. Peça um café para viagem.': 'The barista asks what you would like. Order a coffee to go.',
+  'Agora responda pedindo um café para viagem.': 'Now ask for a coffee to go.',
+  'No balcão de uma cafeteria. Para dizer “para viagem”, use to go.': 'At a coffee shop counter. Use “to go” to order something to take away.',
+  'Em um restaurante, check também pode ser bill.': 'At a restaurant, you can also say “bill” instead of “check”.',
+  'Submitted é comum em formulários e processos oficiais.': '“Submitted” is common in forms and official processes.',
+  'Application pode ser pedido, inscrição ou solicitação, conforme o contexto.': '“Application” can mean pedido, inscrição, or solicitação, depending on the context.',
+  'On my way = estou a caminho. Ajuste client/patient ao seu contexto.': '“On my way” means estou a caminho. Use “client” or “patient” as appropriate.',
+  'Follow up é entrar em contato novamente ou dar continuidade.': '“Follow up” means to get in touch again or continue working on something.',
+  'Coming through descreve som que chega por um dispositivo.': '“Coming through” describes sound reaching you through a device.',
+  'Still indica que algo continua acontecendo.': '“Still” shows that something continues to happen.',
+  'Just + passado simples é uma forma comum de dizer “acabei de”.': '“Just” with the simple past is a common way to say “acabei de”.',
+  'Of all time dá ênfase a algo que você gosta há muito tempo.': '“Of all time” emphasizes that something ranks among your favorites overall.',
+  'Baby e honey são carinhosos. Gas station é posto de gasolina.': '“Baby” and “honey” are terms of affection. “Gas station” means posto de gasolina.',
+  'About aqui significa aproximadamente.': 'Here, “about” means approximately.',
+  'Ainda não há exercícios nesse filtro.': 'No exercises match that filter.',
+  'Escreva sua resposta ou toque em “Ver sugestão”.': 'Write an answer or tap “Show suggested answer”.',
+  'Ainda não há erros guardados.': 'No saved mistakes yet.',
+  'Revisão concluída.': 'Review complete.',
+  'A leitura em voz alta não está disponível neste navegador.': 'Read aloud is unavailable in this browser.',
+  'Ótimo, ela volta mais tarde.': 'Great, you’ll review it again later.',
+  'Tudo bem, vamos rever amanhã.': 'Okay, you’ll review it again tomorrow.',
+  'Expressão guardada. Ela aparece na revisão de hoje.': 'Expression saved. It’s due for review today.',
+  'Exercício adicionado às suas práticas.': 'Exercise added to your practice.',
+  'Backup baixado.': 'Backup downloaded.',
+  'Backup restaurado.': 'Backup restored.',
+  'Não consegui ler esse arquivo de backup.': 'Could not read this backup file.',
+  'Dados recomeçados.': 'Saved data reset.',
+  'Apagar sessões, revisões, exercícios criados e itens do caderno deste navegador?': 'Delete sessions, reviews, custom exercises, and notebook items from this browser?'
+}));
+
+function translateInterface(text) {
+  if (!englishInterface) return text;
+  const value = text.trim();
+  if (translations.has(value)) return text.replace(value, translations.get(value));
+  return text
+    .replace(/^(\s*\d+) de (\d+)( · )(Iniciante|Intermediário|Desafio)$/, (_, a, b, separator, level) => a + ' of ' + b + separator + translations.get(level))
+    .replace(/^(\s*\d+) itens guardados$/, '$1 saved')
+    .replace(/^(\s*\d+) itens$/, '$1 items')
+    .replace(/^(\s*\d+) registros$/, '$1 records')
+    .replace(/^(\s*\d+%) de respostas corretas$/, '$1 correct answers')
+    .replace(/^Sua resposta anterior:/, 'Your previous answer:')
+    .replace(/^Sua tentativa:/, 'Your attempt:')
+    .replace(/^Sugestão:/, 'Suggested answer:')
+    .replace(/^Próxima:/, 'Next:')
+    .replace(/^Traduza(?: para o português| a mensagem)?:/, 'Translate:')
+    .replace(/^(Diga em inglês|Como dizer):/, 'Say this in English:')
+    .replace(/^(\S+ )(Dia a dia|Imigração|Trabalho|Tecnologia|Jogos|Mensagens)$/, (_, icon, topic) => icon + translations.get(topic))
+    .replace(/^(Dia a dia|Imigração|Trabalho|Tecnologia|Jogos|Mensagens) · (Iniciante|Intermediário|Desafio|TENTE DE NOVO|REVISÃO)$/, (_, topic, level) => translations.get(topic) + ' · ' + translations.get(level));
+}
+
+const languageToggle = document.getElementById('language-toggle');
+languageToggle.addEventListener('click', () => {
+  localStorage.setItem(languageKey, englishInterface ? 'pt-BR' : 'en');
+  location.reload();
+});
+
+if (englishInterface) {
+  languageToggle.textContent = 'Português';
+  languageToggle.lang = 'pt-BR';
+  document.documentElement.lang = 'en';
+  document.title = translateInterface(document.title);
+  const visit = node => {
+    if (node.nodeType === Node.TEXT_NODE) {
+      if (node.parentElement?.closest('script, style, textarea, .answer, .phonetic, .en, .pt, .mini-dialogue .bubble:not(.you)')) return;
+      const translated = translateInterface(node.data);
+      if (translated !== node.data) node.data = translated;
+      return;
+    }
+    if (node.nodeType !== Node.ELEMENT_NODE) return;
+    if (node.tagName === 'OPTION' && !node.hasAttribute('value')) node.value = node.textContent;
+    for (const key of ['aria-label', 'placeholder']) {
+      if (node.hasAttribute(key)) node.setAttribute(key, translateInterface(node.getAttribute(key)));
+    }
+    for (const child of node.childNodes) visit(child);
+  };
+  visit(document.body);
+  new MutationObserver(records => {
+    for (const record of records) {
+      if (record.type === 'characterData') visit(record.target);
+      for (const node of record.addedNodes) visit(node);
+    }
+  }).observe(document.body, { subtree: true, childList: true, characterData: true });
+}
+
+
+const STORE='pequenosPassosV1';
+const topics=[
+ {name:'Dia a dia',label:'Conversa do dia a dia',icon:'☕',desc:'Café, compras, pedidos e conversas curtas.',accent:'green'},
+ {name:'Imigração',label:'Imigração',icon:'🗂️',desc:'Formulários, entrevista e situações oficiais.',accent:'orange'},
+ {name:'Trabalho',label:'Trabalho',icon:'🧰',desc:'Rotina, colegas, tarefas e comunicação.',accent:''},
+ {name:'Tecnologia',label:'Tecnologia',icon:'💻',desc:'Dispositivos, aplicativos e solução de problemas.',accent:''},
+ {name:'Jogos',label:'Jogos',icon:'🎮',desc:'Games, progresso, vídeos e recomendações.',accent:''},
+ {name:'Mensagens',label:'Tradução de mensagens',icon:'💬',desc:'Escreva e traduza mensagens naturais.',accent:''}
+];
+
+let state=loadState();let activeSet=[],activeIndex=0,reviewQueue=[];
+function fresh(){return {customExercises:[],words:[],errors:[],stats:{},sessions:[],lastPractice:null,streak:0,reviewCount:0}};
+function loadState(){try{return Object.assign(fresh(),JSON.parse(localStorage.getItem(STORE)||'{}'))}catch{return fresh()}}
+function persist(){localStorage.setItem(STORE,JSON.stringify(state));renderAll()}
+function norm(s){return String(s||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[’']/g,"'").replace(/[^a-z0-9\s']/g,' ').replace(/\s+/g,' ').trim()}
+function dueWords(){let today=dayKey();return state.words.filter(w=>!w.due||w.due<=today)}
+function dayKey(d=new Date()){return [d.getFullYear(),String(d.getMonth()+1).padStart(2,'0'),String(d.getDate()).padStart(2,'0')].join('-')}
+function escapeHtml(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function toast(msg){let x=document.createElement('div');x.className='toast';x.textContent=msg;document.getElementById('toasts').appendChild(x);setTimeout(()=>x.remove(),2600)}
+function go(page){document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));document.getElementById('page-'+page).classList.add('active');document.querySelectorAll('.nav button').forEach(b=>b.classList.toggle('active',b.dataset.page===page));let names={inicio:'Início',praticar:'Praticar',revisar:'Revisar',caderno:'Meu caderno',progresso:'Progresso',adicionar:'Adicionar exercício'};document.getElementById('crumb-current').textContent=names[page];if(page==='revisar')renderReview();if(page==='caderno')renderWords();if(page==='progresso')renderProgress();if(page==='praticar')renderTemplates()}
+document.querySelectorAll('.nav button').forEach(b=>b.addEventListener('click',()=>go(b.dataset.page)));
+function renderTemplates(){let markup=topics.map(t=>`<button class="template" onclick="startTopic('${escapeHtml(t.name)}')"><span class="emoji">${t.icon}</span><b>${escapeHtml(t.label)}</b><small>${escapeHtml(t.desc)}</small></button>`).join('');document.getElementById('templates-home').innerHTML=markup;document.getElementById('templates-practice').innerHTML=markup;let sel=document.getElementById('topic-filter'),prev=sel.value;sel.innerHTML='<option value="todos">Todos os temas</option>'+topics.map(t=>`<option value="${escapeHtml(t.name)}">${escapeHtml(t.label)}</option>`).join('');let extra=[...new Set(state.customExercises.map(e=>e.topic).filter(x=>!topics.some(t=>t.name===x)))];sel.innerHTML+=[...extra.map(x=>`<option value="${escapeHtml(x)}">${escapeHtml(x)}</option>`) ].join('');if(prev)sel.value=prev;document.getElementById('topic-options').innerHTML=[...topics.map(t=>`<option value="${escapeHtml(t.name)}"></option>`),...extra.map(t=>`<option value="${escapeHtml(t)}"></option>`)].join('');document.getElementById('home-topics').innerHTML=topics.slice(0,4).map(t=>{let s=state.stats[t.name]||{total:0,correct:0},pct=s.total?Math.round(s.correct/s.total*100):0;return `<div class="topic-line"><span>${t.icon} ${escapeHtml(t.name)}</span><div class="bar"><i style="width:${pct}%"></i></div><strong>${s.total?pct+'%':'—'}</strong></div>`}).join('')}
+function startTopic(topic){go('praticar');document.getElementById('topic-filter').value=topic;startSession(topic)}
+// Add optional topic files under exercicios/ next to index.html.
+const topicFiles = new Map([
+  ['Dia a dia', 'dia-a-dia.json'],
+  ['Imigração', 'imigracao.json'],
+  ['Trabalho', 'trabalho.json'],
+  ['Tecnologia', 'tecnologia.json'],
+  ['Jogos', 'jogos.json'],
+  ['Mensagens', 'mensagens.json']
+]);
+
+const exerciseFileCache = new Map();
+let sessionRequest = 0;
+
+async function loadTopicExercises(topic) {
+  const filename = topicFiles.get(topic);
+  if (!filename) return [];
+  if (exerciseFileCache.has(topic)) return exerciseFileCache.get(topic);
+
+  const request = (async () => {
+    try {
+      const response = await fetch('./exercicios/' + filename, { cache: 'no-cache' });
+      if (response.status === 404) return [];
+      if (!response.ok) throw new Error('HTTP ' + response.status);
+      const items = await response.json();
+      if (!Array.isArray(items)) throw new Error('Expected an array of exercises');
+
+      const validItems = items.filter(item =>
+        item && typeof item.id === 'string' && item.id.trim() &&
+        typeof item.prompt === 'string' && item.prompt.trim() &&
+        typeof item.answer === 'string' && item.answer.trim() &&
+        ['Iniciante', 'Intermediário', 'Desafio'].includes(item.level) &&
+        ['pt-en', 'en-pt', 'conversation'].includes(item.kind)
+      );
+      return validItems.map(item => ({
+        id: item.id.trim(),
+        topic,
+        level: item.level,
+        kind: item.kind,
+        prompt: item.prompt,
+        answer: item.answer,
+        alts: Array.isArray(item.alts) ? item.alts.filter(value => typeof value === 'string') : [],
+        dialogue: Array.isArray(item.dialogue) ? item.dialogue.filter(line =>
+          Array.isArray(line) && line.length === 2 && line.every(value => typeof value === 'string')
+        ) : [],
+        pron: typeof item.pron === 'string' ? item.pron : '',
+        example: typeof item.example === 'string' ? item.example : '',
+        listen: typeof item.listen === 'string' ? item.listen : item.kind === 'en-pt' ? item.prompt : item.answer
+      }));
+    } catch (error) {
+      exerciseFileCache.delete(topic);
+      console.warn('Could not load exercises from ' + filename, error);
+      return [];
+    }
+  })();
+
+  exerciseFileCache.set(topic, request);
+  return request;
+}
+
+async function startSession(forcedTopic) {
+  const request = ++sessionRequest;
+  const topic = forcedTopic || document.getElementById('topic-filter').value || 'todos';
+  const level = document.getElementById('level-filter').value || 'todos';
+  const selectedTopics = topic === 'todos' ? [...topicFiles.keys()] : [topic];
+  const externalExercises = (await Promise.all(selectedTopics.map(loadTopicExercises))).flat();
+  if (request !== sessionRequest) return;
+
+  // Keep one exercise per ID, with JSON entries overriding the built-in copy.
+  const unique = new Map([...externalExercises, ...state.customExercises].map(exercise => [exercise.id, exercise]));
+  const list = [...unique.values()].filter(exercise =>
+    (topic === 'todos' || exercise.topic === topic) &&
+    (level === 'todos' || exercise.level === level)
+  );
+  if (!list.length) {
+    toast('Ainda não há exercícios nesse filtro.');
+    return;
+  }
+  activeSet = list.sort(() => Math.random() - .5).slice(0, 4);
+  activeIndex = 0;
+  go('praticar');
+  renderExercise();
+}
+function renderExercise(){let host=document.getElementById('exercise-host');if(activeIndex>=activeSet.length){host.innerHTML=`<div class="card" style="text-align:center;padding:34px"><div style="font-size:31px">🌱</div><h2 style="margin:7px 0">Sessão concluída</h2><p>Você avançou um pouco hoje. Esse progresso já conta.</p><button class="btn small" onclick="go('inicio')" style="margin-top:13px">Voltar ao início</button> <button class="btn small secondary" onclick="startSession()" style="margin-top:13px">Fazer mais uma</button></div>`;return}let e=activeSet[activeIndex],topic=topics.find(t=>t.name===e.topic),prompt=e.prompt;let speak=`<button class="btn small ghost" data-text="${escapeHtml(e.listen||e.answer)}" onclick="speak(this.dataset.text)">🔊 Ouvir</button>`;host.innerHTML=`<div class="exercise"><div class="exercise-head"><span class="tag ${topic?.accent||''}">${escapeHtml(topic?.label||e.topic)}</span><span class="duration">${activeIndex+1} de ${activeSet.length} · ${escapeHtml(e.level)}</span></div><div class="exercise-progress"><i style="width:${Math.round((activeIndex/activeSet.length)*100)}%"></i></div><div class="exercise-box"><span class="eyebrow" style="color:#9c7955">${e.kind==='conversation'?'CONVERSA CURTA':e.kind==='en-pt'?'PASSE PARA PORTUGUÊS':'PASSE PARA INGLÊS'}</span><h2>${escapeHtml(e.kind==='conversation'?'Responda em voz alta':prompt)}</h2>${e.kind==='conversation'?`<p class="prompt">${escapeHtml(prompt)}</p>${e.dialogue?.length?`<div class="mini-dialogue">${e.dialogue.map((d,i)=>`<div class="bubble ${i%2?'you':''}"><small>${escapeHtml(d[0])}</small>${escapeHtml(d[1])}</div>`).join('')}</div>`:''}`:`<div class="prompt">${escapeHtml(prompt)}</div>`}<p class="hint">${escapeHtml(e.example||'Tente escrever a resposta. Você pode conferir uma sugestão depois.')}</p>${speak}<textarea id="user-answer" placeholder="${e.kind==='en-pt'?'Escreva em português…':'Escreva em inglês…'}" aria-label="Sua resposta"></textarea><div class="feedback" id="exercise-feedback"></div><div class="exercise-controls"><button class="btn small ghost" onclick="showAnswer()">Ver sugestão</button><div><button class="btn small secondary" onclick="skipExercise()">Pular</button> <button id="check-btn" class="btn small" onclick="checkAnswer()">Conferir resposta</button></div></div>${e.pron?`<div class="pronunciation"><b style="font-size:12px">Pronúncia aproximada</b><div class="phonetic">${escapeHtml(e.pron)}</div><div class="explain">Aproximação para falantes de português; os sons variam por região. Toque em “Ouvir” para escutar a fala do navegador.</div></div>`:''}</div></div>`}
+function checkAnswer(){let e=activeSet[activeIndex],given=document.getElementById('user-answer').value.trim();if(!given){toast('Escreva sua resposta ou toque em “Ver sugestão”.');return}let acceptable=[e.answer,...(e.alts||[])],ok=acceptable.some(a=>norm(a)===norm(given));record(e,ok,given);let f=document.getElementById('exercise-feedback');f.className='feedback show '+(ok?'ok':'no');f.innerHTML=ok?'✓ Boa! A ideia ficou clara.':`Quase. Compare sua frase com a sugestão e tente de novo na revisão.`+`<div class="answer">${escapeHtml(e.answer)}</div>`;document.getElementById('check-btn').textContent='Próximo exercício';document.getElementById('check-btn').onclick=()=>{activeIndex++;renderExercise()};document.getElementById('check-btn').classList.add(ok?'':'secondary')}
+function record(e,ok,given){let s=state.stats[e.topic]||(state.stats[e.topic]={total:0,correct:0});s.total++;if(ok)s.correct++;let today=dayKey();if(state.lastPractice!==today){let yesterday=dayKey(new Date(Date.now()-864e5));state.streak=state.lastPractice===yesterday?(state.streak||0)+1:1;state.lastPractice=today}if(!ok){state.errors.unshift({id:crypto.randomUUID(),topic:e.topic,prompt:e.prompt,given,answer:e.answer,level:e.level,date:today,tries:0});state.errors=state.errors.slice(0,80)}state.sessions.push({date:today,topic:e.topic,ok});persist()}
+function showAnswer(){let e=activeSet[activeIndex],f=document.getElementById('exercise-feedback');f.className='feedback show ok';f.innerHTML=`Sugestão: <div class="answer">${escapeHtml(e.answer)}</div>`;if(e.pron)f.innerHTML+=`<div style="margin-top:5px">${escapeHtml(e.pron)}</div>`;record(e,false,'(abri a sugestão)');document.getElementById('check-btn').textContent='Próximo exercício';document.getElementById('check-btn').onclick=()=>{activeIndex++;renderExercise()}}
+function skipExercise(){activeIndex++;renderExercise()}
+function reviewAllErrors(){if(!state.errors.length){toast('Ainda não há erros guardados.');return}reviewQueue=[...state.errors.slice(0,8).map(x=>({word:x,isError:true}))];reviewIndex=0;renderReviewQuiz()}
+let reviewIndex=0;
+function renderReviewQuiz(){let item=reviewQueue[reviewIndex];if(!item){renderReview();toast('Revisão concluída.');return}let e=item.word;document.getElementById('review-list').innerHTML=`<div class="exercise-box"><span class="tag orange">${escapeHtml(e.topic)} · ${item.isError?'TENTE DE NOVO':'REVISÃO'}</span><h2>${escapeHtml(e.prompt||e.en)}</h2>${e.given?`<p class="hint">Sua resposta anterior: ${escapeHtml(e.given)}</p>`:''}<textarea id="review-answer" placeholder="Escreva sua resposta…"></textarea><div class="feedback" id="review-feedback"></div><div class="exercise-controls"><button class="btn small ghost" onclick="reviewIndex++;renderReviewQuiz()">Pular</button><button class="btn small" onclick="checkReview()">Conferir</button></div></div>`}
+function checkReview(){let it=reviewQueue[reviewIndex].word,g=document.getElementById('review-answer').value.trim();if(!g)return;let ok=[it.answer||it.en,...(it.alts||[])].some(a=>norm(a)===norm(g));let f=document.getElementById('review-feedback');f.className='feedback show '+(ok?'ok':'no');f.innerHTML=ok?'✓ Muito bem.':`A sugestão: <div class="answer">${escapeHtml(it.answer||it.en)}</div>`;if(ok){state.reviewCount++;if(it.id&&state.errors.some(e=>e.id===it.id))state.errors=state.errors.filter(e=>e.id!==it.id)}persist();setTimeout(()=>{reviewIndex++;renderReviewQuiz()},900)}
+function speak(text){if(!('speechSynthesis'in window)){toast('A leitura em voz alta não está disponível neste navegador.');return}speechSynthesis.cancel();let u=new SpeechSynthesisUtterance(text);u.lang='en-US';u.rate=.86;speechSynthesis.speak(u)}
+function speakCurrent(){
+  const exercise = activeSet[activeIndex] || dailyExercise;
+  if (exercise) speak(exercise.listen || exercise.answer);
+}
+function allWords(){return state.words}
+function intervalFor(w){return [1,3,7,14,30][Math.min(w.stage||0,4)]}
+function renderReview(){let words=dueWords();document.getElementById('due-label').textContent=words.length+' itens';document.getElementById('review-nav-count').textContent=words.length?`· ${words.length}`:'';document.getElementById('review-list').innerHTML=words.length?words.map(w=>`<div class="review-item" id="review-${w.id}"><div><div class="en">${escapeHtml(w.en)} <button class="linkbtn" data-text="${escapeHtml(w.en)}" onclick="speak(this.dataset.text)" aria-label="Ouvir expressão">🔊</button></div><div class="pt" id="translation-${w.id}" style="display:none">${escapeHtml(w.pt)}</div><div class="meta"><span class="badge">${escapeHtml(w.topic||'Meu caderno')}</span>${w.pron?`<span class="badge">${escapeHtml(w.pron)}</span>`:''}</div></div><div class="review-actions"><button class="btn small ghost" onclick="revealWord('${w.id}')">Ver resposta</button><span id="grade-${w.id}" style="display:none"><button class="btn small secondary" onclick="gradeWord('${w.id}',false)">Difícil</button><button class="btn small" onclick="gradeWord('${w.id}',true)">Fácil</button></span></div></div>`).join(''):`<div class="empty"><b>Nenhuma expressão vence hoje.</b>Guarde uma frase no caderno ou aproveite para fazer uma sessão curta.</div>`;document.getElementById('error-label').textContent=state.errors.length+' registros';document.getElementById('error-list').innerHTML=state.errors.length?state.errors.slice(0,30).map(e=>`<div class="error-item"><div><span class="badge">${escapeHtml(e.topic)} · ${escapeHtml(e.level)}</span><p style="color:#50615a;font-size:12px;margin:8px 0 4px">${escapeHtml(e.prompt)}</p><div class="mistake">Sua tentativa: ${escapeHtml(e.given)}</div><div class="correct">Sugestão: ${escapeHtml(e.answer)}</div></div><button class="btn small ghost" onclick="practiceError('${e.id}')">Tentar de novo</button></div>`).join(''):`<div class="empty"><b>Seu histórico está limpo.</b>Quando uma resposta escapar, ela aparece aqui com a correção.</div>`}
+function revealWord(id){let t=document.getElementById('translation-'+id),g=document.getElementById('grade-'+id),b=document.querySelector(`#review-${CSS.escape(id)} .review-actions > button`);if(t)t.style.display='block';if(g)g.style.display='inline-flex';if(b)b.style.display='none'}
+function gradeWord(id,easy){let w=state.words.find(w=>w.id===id);if(!w)return;w.stage=easy?Math.min(4,(w.stage||0)+1):0;let due=new Date();due.setDate(due.getDate()+intervalFor(w));w.due=dayKey(due);state.reviewCount++;persist();toast(easy?'Ótimo, ela volta mais tarde.':'Tudo bem, vamos rever amanhã.')}
+function practiceError(id){let e=state.errors.find(x=>x.id===id);if(!e)return;reviewQueue=[{word:e,isError:true}];reviewIndex=0;renderReviewQuiz()}
+function saveWord(ev){ev.preventDefault();let w={id:crypto.randomUUID(),en:document.getElementById('word-en').value.trim(),pt:document.getElementById('word-pt').value.trim(),pron:document.getElementById('word-pron').value.trim(),topic:document.getElementById('word-topic').value.trim()||'Meu caderno',example:document.getElementById('word-example').value.trim(),stage:0,due:dayKey()};state.words.unshift(w);persist();ev.target.reset();toast('Expressão guardada. Ela aparece na revisão de hoje.')}
+function renderWords(){let q=norm(document.getElementById('word-search')?.value||'');let list=allWords().filter(w=>norm(w.en+' '+w.pt+' '+w.topic).includes(q));document.getElementById('word-count-text').textContent=state.words.length+' itens guardados';document.getElementById('word-list').innerHTML=list.length?list.map(w=>`<div class="word-item"><div><div class="en">${escapeHtml(w.en)} <button class="linkbtn" data-text="${escapeHtml(w.en)}" onclick="speak(this.dataset.text)" aria-label="Ouvir inglês">🔊</button></div><div class="pt">${escapeHtml(w.pt)}</div>${w.example?`<div class="pt" style="margin-top:5px">Ex.: ${escapeHtml(w.example)}</div>`:''}<div class="meta"><span class="badge">${escapeHtml(w.topic||'Meu caderno')}</span>${w.pron?`<span class="badge">${escapeHtml(w.pron)}</span>`:''}<span class="badge">${w.due<=dayKey()?'Revisar hoje':'Próxima: '+w.due}</span></div></div><button class="btn small danger" onclick="deleteWord('${w.id}')">Remover</button></div>`).join(''):`<div class="empty"><b>Seu caderno está esperando por você.</b>Adicione uma frase de uma conversa, mensagem ou sessão.</div>`}
+function deleteWord(id){state.words=state.words.filter(w=>w.id!==id);persist()}
+function saveExercise(ev){ev.preventDefault();let topic=document.getElementById('new-topic').value.trim();let prompt=document.getElementById('new-prompt').value.trim();let answer=document.getElementById('new-answer').value.trim();let e={id:'custom-'+crypto.randomUUID(),topic,level:document.getElementById('new-level').value,kind:document.getElementById('new-kind').value,prompt,answer,alts:[],pron:document.getElementById('new-pron').value.trim(),example:document.getElementById('new-example').value.trim(),listen:answer};state.customExercises.unshift(e);persist();ev.target.reset();toast('Exercício adicionado às suas práticas.');go('praticar')}
+function renderProgress(){let stats=state.stats||{},correct=Object.values(stats).reduce((a,s)=>a+s.correct,0),total=Object.values(stats).reduce((a,s)=>a+s.total,0);document.getElementById('progress-correct').textContent=correct;document.getElementById('progress-reviews').textContent=state.reviewCount||0;document.getElementById('progress-topics').textContent=Object.keys(stats).length;let all=[...topics.map(t=>({name:t.name,label:t.label,icon:t.icon})),...Object.keys(stats).filter(n=>!topics.some(t=>t.name===n)).map(n=>({name:n,label:n,icon:'✎'}))];document.getElementById('progress-topics-list').innerHTML=all.map(t=>{let s=stats[t.name]||{total:0,correct:0},p=s.total?Math.round(s.correct/s.total*100):0;return `<div class="progress-card"><div class="title"><span>${t.icon} ${escapeHtml(t.label)}</span><span>${s.total?s.correct+'/'+s.total:'—'}</span></div><div class="caption">${s.total?`${p}% de respostas corretas`:'Ainda sem sessões'}</div><div class="bar"><i style="width:${p}%"></i></div></div>`}).join('');}
+function exportData(){let blob=new Blob([JSON.stringify(state,null,2)],{type:'application/json'}),a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='meu-ingles-backup.json';a.click();URL.revokeObjectURL(a.href);toast('Backup baixado.')}
+function importData(ev){let file=ev.target.files[0];if(!file)return;let r=new FileReader();r.onload=()=>{try{let d=JSON.parse(r.result);if(!Array.isArray(d.words)||!Array.isArray(d.errors))throw 0;state=Object.assign(fresh(),d);persist();toast('Backup restaurado.')}catch{toast('Não consegui ler esse arquivo de backup.')}ev.target.value=''};r.readAsText(file)}
+function resetProgress(){if(!confirm(translateInterface('Apagar sessões, revisões, exercícios criados e itens do caderno deste navegador?')))return;localStorage.removeItem(STORE);state=fresh();persist();toast('Dados recomeçados.')}
+document.getElementById('word-form').addEventListener('submit',saveWord);
+document.getElementById('topic-filter').addEventListener('change',()=>{});
+function renderAll(){let due=dueWords();document.getElementById('stat-due').textContent=due.length;document.getElementById('stat-streak').textContent=state.streak||0;document.getElementById('stat-done').textContent=(state.sessions||[]).length;document.getElementById('today-date').textContent=new Intl.DateTimeFormat(document.documentElement.lang,{weekday:'short',day:'numeric',month:'short'}).format(new Date()).replace('.','');renderTemplates();renderReview();renderWords();renderProgress();let pending=due.slice(0,2);document.getElementById('home-review-preview').innerHTML=pending.length?`<div class="review-list">${pending.map(w=>`<div class="review-item"><div><div class="en">${escapeHtml(w.en)}</div><div class="pt">${escapeHtml(w.pt)}</div></div><button class="btn small secondary" onclick="go('revisar')">Revisar</button></div>`).join('')}</div>`:`<div class="empty"><b>Tudo em dia.</b>Você pode salvar novas expressões ou começar outra prática.</div>`}
+renderAll();
+
+let dailyExercise;
+const listenButton = document.getElementById('daily-listen');
+loadTopicExercises('Dia a dia').then(exercises => {
+  dailyExercise = exercises[0];
+  if (!dailyExercise) return;
+  document.getElementById('daily-title').textContent = dailyExercise.prompt;
+  document.getElementById('daily-subtitle').textContent = dailyExercise.example;
+  listenButton.disabled = false;
+});
+</script>
+</body>
+</html>
