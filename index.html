@@ -285,7 +285,7 @@ if (englishInterface) {
   document.title = translateInterface(document.title);
   const visit = node => {
     if (node.nodeType === Node.TEXT_NODE) {
-      if (node.parentElement?.closest('script, style, textarea, .answer, .phonetic, .en, .pt, .mini-dialogue .bubble:not(.you)')) return;
+      if (node.parentElement?.closest('script, style, textarea, .answer, .phonetic, .en, .pt, [data-study-content], .mini-dialogue .bubble:not(.you)')) return;
       const translated = translateInterface(node.data);
       if (translated !== node.data) node.data = translated;
       return;
@@ -369,6 +369,7 @@ async function loadTopicExercises(topic) {
         level: item.level,
         kind: item.kind,
         prompt: item.prompt,
+        meaning: typeof item.meaning === "string" ? item.meaning : "",
         answer: item.answer,
         alts: Array.isArray(item.alts) ? item.alts.filter(value => typeof value === 'string') : [],
         dialogue: Array.isArray(item.dialogue) ? item.dialogue.filter(line =>
@@ -413,14 +414,23 @@ async function startSession(forcedTopic) {
   renderExercise();
 }
 
+function extractStudyText(text) {
+  const value = String(text || '').trim();
+  const quoted = value.match(/[“"]([^”"]+)[”"]/);
+  if (quoted) return quoted[1];
+  return value.replace(/^(?:Traduza(?: para o português| a mensagem)?|Translate|Diga em inglês|Como dizer|Say this in English)\s*:\s*/i, '');
+}
+
 function studyPhrase(exercise) {
-  const english = exercise.kind === 'en-pt'
-    ? exercise.listen || exercise.prompt
-    : exercise.answer;
-  const meaning = exercise.meaning || (exercise.kind === 'en-pt'
-    ? exercise.answer
-    : exercise.prompt.replace(/^[^“]*“(.+?)”.*$/, '$1'));
-  return { english, meaning };
+  const fromEnglish = exercise.kind === 'en-pt';
+  return {
+    english: fromEnglish
+      ? extractStudyText(exercise.listen || exercise.prompt)
+      : exercise.answer,
+    meaning: exercise.meaning || (fromEnglish
+      ? exercise.answer
+      : extractStudyText(exercise.prompt))
+  };
 }
 
 function renderExercise() {
@@ -441,8 +451,8 @@ function renderExercise() {
       <span class="duration">${activeIndex + 1} de ${activeSet.length} · ${escapeHtml(exercise.level)}</span></div>
       <div class="exercise-progress"><i style="width:${activeIndex / activeSet.length * 100}%"></i></div>
       <div class="exercise-box">
-        <h2 id="study-english" class="en" lang="en">${words}</h2>
-        <p class="pt" style="font-size:16px;margin-bottom:14px">${escapeHtml(phrase.meaning)}</p>
+        <h2 id="study-english" class="en" lang="en" data-study-content>${words}</h2>
+        <p class="pt" lang="pt-BR" data-study-content style="font-size:16px;margin-bottom:14px">${escapeHtml(phrase.meaning)}</p>
         <button class="btn small secondary" data-text="${escapeHtml(phrase.english)}" onclick="speak(this.dataset.text)">🔊 Ouvir</button>
         <button class="btn small ghost" onclick="toggleStudyEnglish()">Esconder / mostrar inglês</button>
         <p class="hint">Ouça, repita e escreva a frase em inglês.</p>
