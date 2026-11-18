@@ -412,8 +412,90 @@ async function startSession(forcedTopic) {
   go('praticar');
   renderExercise();
 }
-function renderExercise(){let host=document.getElementById('exercise-host');if(activeIndex>=activeSet.length){host.innerHTML=`<div class="card" style="text-align:center;padding:34px"><div style="font-size:31px">🌱</div><h2 style="margin:7px 0">Sessão concluída</h2><p>Você avançou um pouco hoje. Esse progresso já conta.</p><button class="btn small" onclick="go('inicio')" style="margin-top:13px">Voltar ao início</button> <button class="btn small secondary" onclick="startSession()" style="margin-top:13px">Fazer mais uma</button></div>`;return}let e=activeSet[activeIndex],topic=topics.find(t=>t.name===e.topic),prompt=e.prompt;let speak=`<button class="btn small ghost" data-text="${escapeHtml(e.listen||e.answer)}" onclick="speak(this.dataset.text)">🔊 Ouvir</button>`;host.innerHTML=`<div class="exercise"><div class="exercise-head"><span class="tag ${topic?.accent||''}">${escapeHtml(topic?.label||e.topic)}</span><span class="duration">${activeIndex+1} de ${activeSet.length} · ${escapeHtml(e.level)}</span></div><div class="exercise-progress"><i style="width:${Math.round((activeIndex/activeSet.length)*100)}%"></i></div><div class="exercise-box"><span class="eyebrow" style="color:#9c7955">${e.kind==='conversation'?'CONVERSA CURTA':e.kind==='en-pt'?'PASSE PARA PORTUGUÊS':'PASSE PARA INGLÊS'}</span><h2>${escapeHtml(e.kind==='conversation'?'Responda em voz alta':prompt)}</h2>${e.kind==='conversation'?`<p class="prompt">${escapeHtml(prompt)}</p>${e.dialogue?.length?`<div class="mini-dialogue">${e.dialogue.map((d,i)=>`<div class="bubble ${i%2?'you':''}"><small>${escapeHtml(d[0])}</small>${escapeHtml(d[1])}</div>`).join('')}</div>`:''}`:`<div class="prompt">${escapeHtml(prompt)}</div>`}<p class="hint">${escapeHtml(e.example||'Tente escrever a resposta. Você pode conferir uma sugestão depois.')}</p>${speak}<textarea id="user-answer" placeholder="${e.kind==='en-pt'?'Escreva em português…':'Escreva em inglês…'}" aria-label="Sua resposta"></textarea><div class="feedback" id="exercise-feedback"></div><div class="exercise-controls"><button class="btn small ghost" onclick="showAnswer()">Ver sugestão</button><div><button class="btn small secondary" onclick="skipExercise()">Pular</button> <button id="check-btn" class="btn small" onclick="checkAnswer()">Conferir resposta</button></div></div>${e.pron?`<div class="pronunciation"><b style="font-size:12px">Pronúncia aproximada</b><div class="phonetic">${escapeHtml(e.pron)}</div><div class="explain">Aproximação para falantes de português; os sons variam por região. Toque em “Ouvir” para escutar a fala do navegador.</div></div>`:''}</div></div>`}
-function checkAnswer(){let e=activeSet[activeIndex],given=document.getElementById('user-answer').value.trim();if(!given){toast('Escreva sua resposta ou toque em “Ver sugestão”.');return}let acceptable=[e.answer,...(e.alts||[])],ok=acceptable.some(a=>norm(a)===norm(given));record(e,ok,given);let f=document.getElementById('exercise-feedback');f.className='feedback show '+(ok?'ok':'no');f.innerHTML=ok?'✓ Boa! A ideia ficou clara.':`Quase. Compare sua frase com a sugestão e tente de novo na revisão.`+`<div class="answer">${escapeHtml(e.answer)}</div>`;document.getElementById('check-btn').textContent='Próximo exercício';document.getElementById('check-btn').onclick=()=>{activeIndex++;renderExercise()};document.getElementById('check-btn').classList.add(ok?'':'secondary')}
+
+function studyPhrase(exercise) {
+  const english = exercise.kind === 'en-pt'
+    ? exercise.listen || exercise.prompt
+    : exercise.answer;
+  const meaning = exercise.meaning || (exercise.kind === 'en-pt'
+    ? exercise.answer
+    : exercise.prompt.replace(/^[^“]*“(.+?)”.*$/, '$1'));
+  return { english, meaning };
+}
+
+function renderExercise() {
+  const host = document.getElementById('exercise-host');
+  if (activeIndex >= activeSet.length) {
+    host.innerHTML = '<div class="card"><h2>Sessão concluída</h2><button class="btn" onclick="startSession()">Fazer mais uma</button></div>';
+    return;
+  }
+  const exercise = activeSet[activeIndex];
+  const phrase = studyPhrase(exercise);
+  const words = phrase.english.split(/\s+/).map(word =>
+    '<button type="button" class="linkbtn" style="font-size:inherit;padding:4px" lang="en" data-word="' +
+    escapeHtml(word) + '" onclick="speak(this.dataset.word)">' + escapeHtml(word) + '</button>'
+  ).join(' ');
+  host.innerHTML = `
+    <div class="exercise">
+      <div class="exercise-head"><span class="tag green">${escapeHtml(exercise.topic)}</span>
+      <span class="duration">${activeIndex + 1} de ${activeSet.length} · ${escapeHtml(exercise.level)}</span></div>
+      <div class="exercise-progress"><i style="width:${activeIndex / activeSet.length * 100}%"></i></div>
+      <div class="exercise-box">
+        <h2 id="study-english" class="en" lang="en">${words}</h2>
+        <p class="pt" style="font-size:16px;margin-bottom:14px">${escapeHtml(phrase.meaning)}</p>
+        <button class="btn small secondary" data-text="${escapeHtml(phrase.english)}" onclick="speak(this.dataset.text)">🔊 Ouvir</button>
+        <button class="btn small ghost" onclick="toggleStudyEnglish()">Esconder / mostrar inglês</button>
+        <p class="hint">Ouça, repita e escreva a frase em inglês.</p>
+        <textarea id="user-answer" lang="en" spellcheck="false" placeholder="Escreva em inglês…" aria-label="Sua resposta"></textarea>
+        <div class="feedback" id="exercise-feedback"></div>
+        <div class="exercise-controls">
+          <button class="btn small ghost" onclick="showAnswer()">Ver sugestão</button>
+          <div><button class="btn small secondary" onclick="skipExercise()">Pular</button>
+          <button id="check-btn" class="btn small" onclick="checkAnswer()">Conferir resposta</button></div>
+        </div>
+        ${exercise.pron ? '<div class="pronunciation"><b>Pronúncia aproximada</b><p class="phonetic">' + escapeHtml(exercise.pron) + '</p></div>' : ''}
+      </div>
+    </div>`;
+}
+
+function toggleStudyEnglish() {
+  const target = document.getElementById('study-english');
+  target.hidden = !target.hidden;
+}
+
+function finishStudyFeedback() {
+  const button = document.getElementById('check-btn');
+  button.textContent = 'Próximo exercício';
+  button.onclick = () => { activeIndex++; renderExercise(); };
+}
+
+function checkAnswer() {
+  const exercise = activeSet[activeIndex];
+  const phrase = studyPhrase(exercise);
+  const given = document.getElementById('user-answer').value.trim();
+  if (!given) { toast('Escreva sua resposta ou toque em “Ver sugestão”.'); return; }
+  const choices = [phrase.english, ...(exercise.kind === 'en-pt' ? [] : exercise.alts || [])];
+  const correct = choices.some(value => norm(value) === norm(given));
+  record({...exercise, answer:phrase.english}, correct, given);
+  const feedback = document.getElementById('exercise-feedback');
+  feedback.className = 'feedback show ' + (correct ? 'ok' : 'no');
+  const expectedWords = phrase.english.split(/\s+/);
+  const typedWords = given.split(/\s+/);
+  const corrected = expectedWords.map((word,index) =>
+    norm(word) === norm(typedWords[index] || '') ? escapeHtml(word) :
+    '<mark style="background:#dcefe2">' + escapeHtml(word) + '</mark>'
+  ).join(' ');
+  feedback.innerHTML = correct ? '✓ Muito bem.' :
+    '<p>Sua tentativa: ' + escapeHtml(given) + '</p><p class="en" lang="en"><b>Frase correta</b><br>' +
+    corrected + '</p><p>As palavras destacadas diferem da sua escrita nessa posição.</p>';
+  finishStudyFeedback();
+}
+
+function showAnswer() {
+  const feedback = document.getElementById('exercise-feedback');
+  feedback.className = 'feedback show ok';
+  feedback.innerHTML = '<div class="en" lang="en">' + escapeHtml(studyPhrase(activeSet[activeIndex]).english) + '</div>';
+}
 function record(e,ok,given){let s=state.stats[e.topic]||(state.stats[e.topic]={total:0,correct:0});s.total++;if(ok)s.correct++;let today=dayKey();if(state.lastPractice!==today){let yesterday=dayKey(new Date(Date.now()-864e5));state.streak=state.lastPractice===yesterday?(state.streak||0)+1:1;state.lastPractice=today}if(!ok){state.errors.unshift({id:crypto.randomUUID(),topic:e.topic,prompt:e.prompt,given,answer:e.answer,level:e.level,date:today,tries:0});state.errors=state.errors.slice(0,80)}state.sessions.push({date:today,topic:e.topic,ok});persist()}
 function showAnswer(){let e=activeSet[activeIndex],f=document.getElementById('exercise-feedback');f.className='feedback show ok';f.innerHTML=`Sugestão: <div class="answer">${escapeHtml(e.answer)}</div>`;if(e.pron)f.innerHTML+=`<div style="margin-top:5px">${escapeHtml(e.pron)}</div>`;record(e,false,'(abri a sugestão)');document.getElementById('check-btn').textContent='Próximo exercício';document.getElementById('check-btn').onclick=()=>{activeIndex++;renderExercise()}}
 function skipExercise(){activeIndex++;renderExercise()}
