@@ -106,6 +106,7 @@ const translations = new Map(Object.entries({
   '⏱ cerca de 5 min': '⏱ about 5 min',
   'Iniciar sessão': 'Start session',
   'Outra frase': 'Another phrase',
+  'Complete a estrutura:': 'Complete the pattern:',
   '🔊 Ouvir frase': '🔊 Listen to phrase',
   'Seu caminho por temas': 'Your progress by topic',
   'Veja o que você já vem praticando.': 'See what you have been practicing.',
@@ -135,9 +136,9 @@ const translations = new Map(Object.entries({
   'Dispositivos, aplicativos e solução de problemas.': 'Devices, apps, and troubleshooting.',
   'Jogos': 'Gaming',
   'Games, progresso, vídeos e recomendações.': 'Games, progress, videos, and recommendations.',
-  'Mensagens': 'Messages',
-  'Tradução de mensagens': 'Message translation',
-  'Escreva e traduza mensagens naturais.': 'Write and translate natural messages.',
+  'Estruturas': 'Sentence patterns',
+  'Estruturas': 'Sentence patterns',
+  'Monte frases trocando os blocos da estrutura.': 'Build sentences by changing parts of a pattern.',
   'Revisão no momento certo': 'Review at the right time',
   'As expressões e os erros retornam em intervalos maiores à medida que ficam fáceis.': 'Review expressions and mistakes as they become easier to remember.',
   'Treinar meus erros': 'Practice my mistakes',
@@ -269,8 +270,8 @@ function translateInterface(text) {
     .replace(/^Próxima:/, 'Next:')
     .replace(/^Traduza(?: para o português| a mensagem)?:/, 'Translate:')
     .replace(/^(Diga em inglês|Como dizer):/, 'Say this in English:')
-    .replace(/^(\S+ )(Dia a dia|Imigração|Trabalho|Tecnologia|Jogos|Mensagens)$/, (_, icon, topic) => icon + translations.get(topic))
-    .replace(/^(Dia a dia|Imigração|Trabalho|Tecnologia|Jogos|Mensagens) · (Iniciante|Intermediário|Desafio|TENTE DE NOVO|REVISÃO)$/, (_, topic, level) => translations.get(topic) + ' · ' + translations.get(level));
+    .replace(/^(\S+ )(Dia a dia|Imigração|Trabalho|Tecnologia|Jogos|Estruturas)$/, (_, icon, topic) => icon + translations.get(topic))
+    .replace(/^(Dia a dia|Imigração|Trabalho|Tecnologia|Jogos|Estruturas) · (Iniciante|Intermediário|Desafio|TENTE DE NOVO|REVISÃO)$/, (_, topic, level) => translations.get(topic) + ' · ' + translations.get(level));
 }
 
 const languageToggle = document.getElementById('language-toggle');
@@ -315,7 +316,7 @@ const topics=[
  {name:'Trabalho',label:'Trabalho',icon:'🧰',desc:'Rotina, colegas, tarefas e comunicação.',accent:''},
  {name:'Tecnologia',label:'Tecnologia',icon:'💻',desc:'Dispositivos, aplicativos e solução de problemas.',accent:''},
  {name:'Jogos',label:'Jogos',icon:'🎮',desc:'Games, progresso, vídeos e recomendações.',accent:''},
- {name:'Mensagens',label:'Tradução de mensagens',icon:'💬',desc:'Escreva e traduza mensagens naturais.',accent:''}
+ {name:'Estruturas',label:'Estruturas',icon:'💬',desc:'Monte frases trocando os blocos da estrutura.',accent:''}
 ];
 
 let state=loadState();let activeSet=[],activeIndex=0,reviewQueue=[];
@@ -338,7 +339,7 @@ const topicFiles = new Map([
   ['Trabalho', 'trabalho.json'],
   ['Tecnologia', 'tecnologia.json'],
   ['Jogos', 'jogos.json'],
-  ['Mensagens', 'mensagens.json']
+  ['Estruturas', 'estruturas.json']
 ]);
 
 const exerciseFileCache = new Map();
@@ -357,6 +358,28 @@ async function loadTopicExercises(topic) {
       const items = await response.json();
       if (!Array.isArray(items)) throw new Error('Expected an array of exercises');
 
+      if (topic === 'Estruturas') {
+        return items.filter(item => item && typeof item.en === 'string' &&
+          typeof item.pt === 'string' && Array.isArray(item.blocks))
+          .flatMap((item, modelIndex) => item.blocks
+            .filter(part => part && typeof part.en === 'string' && typeof part.pt === 'string')
+            .map((part, blockIndex) => ({
+              id: 'structure-' + (item.id || modelIndex) + '-' + (part.id || blockIndex),
+              topic: 'Estruturas',
+              level: item.level || 'Iniciante',
+              kind: 'pt-en',
+              prompt: item.pt + ' ' + part.pt + (item.end || '.'),
+              meaning: item.pt + ' ' + part.pt + (item.end || '.'),
+              answer: item.en + ' ' + part.en + (item.end || '.'),
+              listen: item.en + ' ' + part.en + (item.end || '.'),
+              alts: [],
+              pattern: item.en,
+              blocks: item.blocks.filter(value => value && typeof value.en === 'string' && typeof value.pt === 'string'),
+              patternMeaning: item.pt,
+              ending: item.end || '.',
+              selectedBlock: blockIndex
+            })));
+      }
       const validItems = items.filter(item =>
         item && typeof item.id === 'string' && item.id.trim() &&
         typeof item.prompt === 'string' && item.prompt.trim() &&
@@ -456,6 +479,7 @@ function renderExercise() {
       <span class="duration">${activeIndex + 1} de ${activeSet.length} · ${escapeHtml(exercise.level)}</span></div>
       <div class="exercise-progress"><i style="width:${activeIndex / activeSet.length * 100}%"></i></div>
       <div class="exercise-box">
+        ${exercise.pattern ? '<div class="field"><label for="structure-block">Complete a estrutura: <span lang="en" class="en">' + escapeHtml(exercise.pattern) + '…</span></label><select id="structure-block" lang="en" onchange="changeStructureBlock(this.value)">' + exercise.blocks.map((part,index) => '<option value="' + index + '"' + (part.en === exercise.answer.slice(exercise.pattern.length + 1, -exercise.ending.length) ? ' selected' : '') + '>' + escapeHtml(part.en) + '</option>').join('') + '</select></div>' : ''}
         <h2 id="study-english" class="en" lang="en" data-study-content>${words}</h2>
         <p class="pt" lang="pt-BR" data-study-content style="font-size:16px;margin-bottom:14px">${escapeHtml(phrase.meaning)}</p>
         <button class="btn small secondary" data-text="${escapeHtml(phrase.english)}" onclick="speak(this.dataset.text)">🔊 Ouvir</button>
@@ -473,6 +497,16 @@ function renderExercise() {
     </div>`;
 }
 
+function changeStructureBlock(value) {
+  const exercise = activeSet[activeIndex];
+  const part = exercise.blocks[Number(value)];
+  if (!part) return;
+  exercise.answer = exercise.pattern + ' ' + part.en + exercise.ending;
+  exercise.listen = exercise.answer;
+  exercise.meaning = exercise.patternMeaning + ' ' + part.pt + exercise.ending;
+  exercise.prompt = exercise.meaning;
+  renderExercise();
+}
 function toggleStudyEnglish() {
   const target = document.getElementById('study-english');
   target.hidden = !target.hidden;
