@@ -39,7 +39,7 @@
       </div>
       <div class="section-head"><div><h2>Uma sessão para hoje</h2><p>Curta, prática e no seu nível.</p></div><button class="linkbtn" onclick="go('praticar')">Escolher tema →</button></div>
       <div class="grid2">
-        <div class="card session-card"><div class="session-row"><span class="tag green" id="daily-tag">CONVERSA DO DIA A DIA</span><span class="duration">⏱ cerca de 5 min</span></div><h3 id="daily-title">Pedindo um café para viagem</h3><p id="daily-subtitle">Pratique uma situação comum: pedir, confirmar e agradecer.</p><div class="session-actions"><button class="btn small" onclick="startSession()">Iniciar sessão</button><button class="btn small secondary" id="daily-listen" onclick="speakCurrent()" disabled>🔊 Ouvir frase</button></div></div>
+        <div class="card session-card"><div class="session-row"><span class="tag green" id="daily-tag">CONVERSA DO DIA A DIA</span><span class="duration">⏱ cerca de 5 min</span></div><h3 id="daily-title" class="en" lang="en" data-study-content>Carregando frase…</h3><p id="daily-subtitle" class="pt" lang="pt-BR" data-study-content></p><div class="session-actions"><button class="btn small" onclick="startSession()">Iniciar sessão</button><button class="btn small secondary" id="daily-listen" onclick="speakCurrent()" disabled>🔊 Ouvir frase</button></div></div>
         <div class="card"><h3>Seu caminho por temas</h3><p>Veja o que você já vem praticando.</p><div class="topic-list" id="home-topics"></div></div>
       </div>
       <div class="section-head"><div><h2>Pratique uma situação</h2><p>Escolha um tema para uma sessão curta.</p></div></div>
@@ -542,8 +542,17 @@ const listenButton = document.getElementById('daily-listen');
 loadTopicExercises('Dia a dia').then(exercises => {
   dailyExercise = exercises[0];
   if (!dailyExercise) return;
-  document.getElementById('daily-title').textContent = dailyExercise.prompt;
-  document.getElementById('daily-subtitle').textContent = dailyExercise.example;
+  const phrase = studyPhrase(dailyExercise);
+  const title = document.getElementById("daily-title");
+  const subtitle = document.getElementById("daily-subtitle");
+  title.classList.add("en");
+  title.lang = "en";
+  title.setAttribute("data-study-content", "");
+  subtitle.classList.add("pt");
+  subtitle.lang = "pt-BR";
+  subtitle.setAttribute("data-study-content", "");
+  title.textContent = phrase.english;
+  subtitle.textContent = phrase.meaning;
   listenButton.disabled = false;
 });
 </script>
