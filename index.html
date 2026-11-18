@@ -506,13 +506,72 @@ function showAnswer() {
   feedback.className = 'feedback show ok';
   feedback.innerHTML = '<div class="en" lang="en">' + escapeHtml(studyPhrase(activeSet[activeIndex]).english) + '</div>';
 }
-function record(e,ok,given){let s=state.stats[e.topic]||(state.stats[e.topic]={total:0,correct:0});s.total++;if(ok)s.correct++;let today=dayKey();if(state.lastPractice!==today){let yesterday=dayKey(new Date(Date.now()-864e5));state.streak=state.lastPractice===yesterday?(state.streak||0)+1:1;state.lastPractice=today}if(!ok){state.errors.unshift({id:crypto.randomUUID(),topic:e.topic,prompt:e.prompt,given,answer:e.answer,level:e.level,date:today,tries:0});state.errors=state.errors.slice(0,80)}state.sessions.push({date:today,topic:e.topic,ok});persist()}
+function record(e,ok,given){let s=state.stats[e.topic]||(state.stats[e.topic]={total:0,correct:0});s.total++;if(ok)s.correct++;let today=dayKey();if(state.lastPractice!==today){let yesterday=dayKey(new Date(Date.now()-864e5));state.streak=state.lastPractice===yesterday?(state.streak||0)+1:1;state.lastPractice=today}if(!ok){state.errors.unshift({id:crypto.randomUUID(),topic:e.topic,prompt:e.prompt,given,answer:e.answer,meaning:studyPhrase(e).meaning,alts:e.alts||[],level:e.level,date:today,tries:0});state.errors=state.errors.slice(0,80)}state.sessions.push({date:today,topic:e.topic,ok});persist()}
 function showAnswer(){let e=activeSet[activeIndex],f=document.getElementById('exercise-feedback');f.className='feedback show ok';f.innerHTML=`Sugestão: <div class="answer">${escapeHtml(e.answer)}</div>`;if(e.pron)f.innerHTML+=`<div style="margin-top:5px">${escapeHtml(e.pron)}</div>`;record(e,false,'(abri a sugestão)');document.getElementById('check-btn').textContent='Próximo exercício';document.getElementById('check-btn').onclick=()=>{activeIndex++;renderExercise()}}
 function skipExercise(){activeIndex++;renderExercise()}
 function reviewAllErrors(){if(!state.errors.length){toast('Ainda não há erros guardados.');return}reviewQueue=[...state.errors.slice(0,8).map(x=>({word:x,isError:true}))];reviewIndex=0;renderReviewQuiz()}
 let reviewIndex=0;
-function renderReviewQuiz(){let item=reviewQueue[reviewIndex];if(!item){renderReview();toast('Revisão concluída.');return}let e=item.word;document.getElementById('review-list').innerHTML=`<div class="exercise-box"><span class="tag orange">${escapeHtml(e.topic)} · ${item.isError?'TENTE DE NOVO':'REVISÃO'}</span><h2>${escapeHtml(e.prompt||e.en)}</h2>${e.given?`<p class="hint">Sua resposta anterior: ${escapeHtml(e.given)}</p>`:''}<textarea id="review-answer" placeholder="Escreva sua resposta…"></textarea><div class="feedback" id="review-feedback"></div><div class="exercise-controls"><button class="btn small ghost" onclick="reviewIndex++;renderReviewQuiz()">Pular</button><button class="btn small" onclick="checkReview()">Conferir</button></div></div>`}
-function checkReview(){let it=reviewQueue[reviewIndex].word,g=document.getElementById('review-answer').value.trim();if(!g)return;let ok=[it.answer||it.en,...(it.alts||[])].some(a=>norm(a)===norm(g));let f=document.getElementById('review-feedback');f.className='feedback show '+(ok?'ok':'no');f.innerHTML=ok?'✓ Muito bem.':`A sugestão: <div class="answer">${escapeHtml(it.answer||it.en)}</div>`;if(ok){state.reviewCount++;if(it.id&&state.errors.some(e=>e.id===it.id))state.errors=state.errors.filter(e=>e.id!==it.id)}persist();setTimeout(()=>{reviewIndex++;renderReviewQuiz()},900)}
+let reviewRenderRequest = 0;
+async function reviewMeaning(entry) {
+  if (entry.meaning || entry.pt) return entry.meaning || entry.pt;
+  const exercises = await loadTopicExercises(entry.topic);
+  const match = exercises.find(exercise => exercise.prompt === entry.prompt ||
+    norm(studyPhrase(exercise).english) === norm(entry.answer));
+  if (match) {
+    entry.meaning = studyPhrase(match).meaning;
+    return entry.meaning;
+  }
+  return entry.prompt || '';
+}
+async function renderReviewQuiz() {
+  const request = ++reviewRenderRequest;
+  const item = reviewQueue[reviewIndex];
+  if (!item) { renderReview(); toast('Revisão concluída.'); return; }
+  const entry = item.word;
+  const meaning = await reviewMeaning(entry);
+  if (request !== reviewRenderRequest) return;
+  const sentence = entry.answer || entry.en;
+  document.getElementById('review-list').innerHTML = `
+    <div class="exercise-box">
+      <span class="tag orange">${escapeHtml(entry.topic)} · TENTE DE NOVO</span>
+      <h2 class="en" lang="en" data-study-content>${escapeHtml(sentence)}</h2>
+      <p class="pt" lang="pt-BR" data-study-content style="font-size:16px;margin:8px 0 14px">${escapeHtml(meaning)}</p>
+      <button class="btn small secondary" data-text="${escapeHtml(sentence)}" onclick="speak(this.dataset.text)">🔊 Ouvir</button>
+      <p class="hint">Ouça, repita e escreva a frase em inglês.</p>
+      <p class="hint">Sua resposta anterior: ${escapeHtml(entry.given || '')}</p>
+      <textarea id="review-answer" lang="en" spellcheck="false" placeholder="Escreva em inglês…"></textarea>
+      <div class="feedback" id="review-feedback"></div>
+      <div class="exercise-controls">
+        <button class="btn small ghost" onclick="reviewIndex++;renderReviewQuiz()">Pular</button>
+        <button class="btn small ghost" data-text="${escapeHtml(sentence)}" onclick="showReviewSuggestion(this.dataset.text)">Ver sugestão</button>
+        <button id="review-check" class="btn small" onclick="checkReview()">Conferir</button>
+      </div>
+    </div>`;
+}
+function showReviewSuggestion(text) {
+  const feedback = document.getElementById('review-feedback');
+  feedback.className = 'feedback show ok';
+  feedback.innerHTML = '<div class="en" lang="en">' + escapeHtml(text) + '</div>';
+}
+function checkReview() {
+  const entry = reviewQueue[reviewIndex].word;
+  const given = document.getElementById('review-answer').value.trim();
+  if (!given) return;
+  const expected = entry.answer || entry.en;
+  const correct = [expected, ...(entry.alts || [])].some(value => norm(value) === norm(given));
+  const feedback = document.getElementById('review-feedback');
+  feedback.className = 'feedback show ' + (correct ? 'ok' : 'no');
+  feedback.innerHTML = correct ? '✓ Muito bem.' :
+    '<p>Sua tentativa: ' + escapeHtml(given) + '</p><div class="en" lang="en">Frase correta: ' + escapeHtml(expected) + '</div>';
+  if (correct) {
+    state.reviewCount++;
+    state.errors = state.errors.filter(error => error.id !== entry.id);
+    localStorage.setItem(STORE, JSON.stringify(state));
+  }
+  const button = document.getElementById('review-check');
+  button.textContent = 'Próximo exercício';
+  button.onclick = () => { reviewIndex++; renderReviewQuiz(); };
+}
 function speak(text){if(!('speechSynthesis'in window)){toast('A leitura em voz alta não está disponível neste navegador.');return}speechSynthesis.cancel();let u=new SpeechSynthesisUtterance(text);u.lang='en-US';u.rate=.86;speechSynthesis.speak(u)}
 function speakCurrent(){
   const exercise = activeSet[activeIndex] || dailyExercise;
@@ -520,7 +579,7 @@ function speakCurrent(){
 }
 function allWords(){return state.words}
 function intervalFor(w){return [1,3,7,14,30][Math.min(w.stage||0,4)]}
-function renderReview(){let words=dueWords();document.getElementById('due-label').textContent=words.length+' itens';document.getElementById('review-nav-count').textContent=words.length?`· ${words.length}`:'';document.getElementById('review-list').innerHTML=words.length?words.map(w=>`<div class="review-item" id="review-${w.id}"><div><div class="en">${escapeHtml(w.en)} <button class="linkbtn" data-text="${escapeHtml(w.en)}" onclick="speak(this.dataset.text)" aria-label="Ouvir expressão">🔊</button></div><div class="pt" id="translation-${w.id}" style="display:none">${escapeHtml(w.pt)}</div><div class="meta"><span class="badge">${escapeHtml(w.topic||'Meu caderno')}</span>${w.pron?`<span class="badge">${escapeHtml(w.pron)}</span>`:''}</div></div><div class="review-actions"><button class="btn small ghost" onclick="revealWord('${w.id}')">Ver resposta</button><span id="grade-${w.id}" style="display:none"><button class="btn small secondary" onclick="gradeWord('${w.id}',false)">Difícil</button><button class="btn small" onclick="gradeWord('${w.id}',true)">Fácil</button></span></div></div>`).join(''):`<div class="empty"><b>Nenhuma expressão vence hoje.</b>Guarde uma frase no caderno ou aproveite para fazer uma sessão curta.</div>`;document.getElementById('error-label').textContent=state.errors.length+' registros';document.getElementById('error-list').innerHTML=state.errors.length?state.errors.slice(0,30).map(e=>`<div class="error-item"><div><span class="badge">${escapeHtml(e.topic)} · ${escapeHtml(e.level)}</span><p style="color:#50615a;font-size:12px;margin:8px 0 4px">${escapeHtml(e.prompt)}</p><div class="mistake">Sua tentativa: ${escapeHtml(e.given)}</div><div class="correct">Sugestão: ${escapeHtml(e.answer)}</div></div><button class="btn small ghost" onclick="practiceError('${e.id}')">Tentar de novo</button></div>`).join(''):`<div class="empty"><b>Seu histórico está limpo.</b>Quando uma resposta escapar, ela aparece aqui com a correção.</div>`}
+function renderReview(){let words=dueWords();document.getElementById('due-label').textContent=words.length+' itens';document.getElementById('review-nav-count').textContent=words.length?`· ${words.length}`:'';document.getElementById('review-list').innerHTML=words.length?words.map(w=>`<div class="review-item" id="review-${w.id}"><div><div class="en">${escapeHtml(w.en)} <button class="linkbtn" data-text="${escapeHtml(w.en)}" onclick="speak(this.dataset.text)" aria-label="Ouvir expressão">🔊</button></div><div class="pt" id="translation-${w.id}" style="display:none">${escapeHtml(w.pt)}</div><div class="meta"><span class="badge">${escapeHtml(w.topic||'Meu caderno')}</span>${w.pron?`<span class="badge">${escapeHtml(w.pron)}</span>`:''}</div></div><div class="review-actions"><button class="btn small ghost" onclick="revealWord('${w.id}')">Ver resposta</button><span id="grade-${w.id}" style="display:none"><button class="btn small secondary" onclick="gradeWord('${w.id}',false)">Difícil</button><button class="btn small" onclick="gradeWord('${w.id}',true)">Fácil</button></span></div></div>`).join(''):`<div class="empty"><b>Nenhuma expressão vence hoje.</b>Guarde uma frase no caderno ou aproveite para fazer uma sessão curta.</div>`;document.getElementById('error-label').textContent=state.errors.length+' registros';document.getElementById('error-list').innerHTML=state.errors.length?state.errors.slice(0,30).map(e=>`<div class="error-item"><div><span class="badge">${escapeHtml(e.topic)} · ${escapeHtml(e.level)}</span><h3 class="en" lang="en" data-study-content style="margin:8px 0">${escapeHtml(e.answer)}</h3><p class="pt" lang="pt-BR" data-study-content>${escapeHtml(e.meaning || e.prompt)}</p><div class="mistake">Sua tentativa: ${escapeHtml(e.given)}</div><div class="correct">Sugestão: ${escapeHtml(e.answer)}</div></div><button class="btn small ghost" onclick="practiceError('${e.id}')">Tentar de novo</button></div>`).join(''):`<div class="empty"><b>Seu histórico está limpo.</b>Quando uma resposta escapar, ela aparece aqui com a correção.</div>`}
 function revealWord(id){let t=document.getElementById('translation-'+id),g=document.getElementById('grade-'+id),b=document.querySelector(`#review-${CSS.escape(id)} .review-actions > button`);if(t)t.style.display='block';if(g)g.style.display='inline-flex';if(b)b.style.display='none'}
 function gradeWord(id,easy){let w=state.words.find(w=>w.id===id);if(!w)return;w.stage=easy?Math.min(4,(w.stage||0)+1):0;let due=new Date();due.setDate(due.getDate()+intervalFor(w));w.due=dayKey(due);state.reviewCount++;persist();toast(easy?'Ótimo, ela volta mais tarde.':'Tudo bem, vamos rever amanhã.')}
 function practiceError(id){let e=state.errors.find(x=>x.id===id);if(!e)return;reviewQueue=[{word:e,isError:true}];reviewIndex=0;renderReviewQuiz()}
