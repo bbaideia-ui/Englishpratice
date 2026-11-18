@@ -400,7 +400,7 @@ async function startSession(forcedTopic) {
   if (request !== sessionRequest) return;
 
   // Keep one exercise per ID, with JSON entries overriding the built-in copy.
-  const unique = new Map([...externalExercises, ...state.customExercises].map(exercise => [exercise.id, exercise]));
+  const unique = new Map([...(state.pendingExercises || []), ...externalExercises, ...state.customExercises].map(exercise => [exercise.id, exercise]));
   const list = [...unique.values()].filter(exercise =>
     (topic === 'todos' || exercise.topic === topic) &&
     (level === 'todos' || exercise.level === level)
@@ -409,8 +409,12 @@ async function startSession(forcedTopic) {
     toast('Ainda não há exercícios nesse filtro.');
     return;
   }
-  activeSet = list.sort(() => Math.random() - .5).slice(0, 4);
+  const pendingIds = new Set((state.pendingExercises || []).map(item => item.id));
+  const pending = list.filter(item => pendingIds.has(item.id));
+  const others = list.filter(item => !pendingIds.has(item.id)).sort(() => Math.random() - .5);
+  activeSet = [...pending, ...others].slice(0, 4);
   activeIndex = 0;
+  sessionOutcomes = activeSet.map(() => 'pending');
   go('praticar');
   renderExercise();
 }
@@ -437,7 +441,7 @@ function studyPhrase(exercise) {
 function renderExercise() {
   const host = document.getElementById('exercise-host');
   if (activeIndex >= activeSet.length) {
-    host.innerHTML = '<div class="card"><h2>Sessão concluída</h2><button class="btn" onclick="startSession()">Fazer mais uma</button></div>';
+    renderSessionSummary(host);
     return;
   }
   const exercise = activeSet[activeIndex];
@@ -487,6 +491,9 @@ function checkAnswer() {
   if (!given) { toast('Escreva sua resposta ou toque em “Ver sugestão”.'); return; }
   const choices = [phrase.english, ...(exercise.kind === 'en-pt' ? [] : exercise.alts || [])];
   const correct = choices.some(value => norm(value) === norm(given));
+  if (sessionOutcomes[activeIndex] === 'answered') return;
+  sessionOutcomes[activeIndex] = 'answered';
+  state.pendingExercises = (state.pendingExercises || []).filter(item => item.id !== exercise.id);
   record({...exercise, answer:phrase.english}, correct, given);
   const feedback = document.getElementById('exercise-feedback');
   feedback.className = 'feedback show ' + (correct ? 'ok' : 'no');
@@ -509,7 +516,43 @@ function showAnswer() {
 }
 function record(e,ok,given){let s=state.stats[e.topic]||(state.stats[e.topic]={total:0,correct:0});s.total++;if(ok)s.correct++;let today=dayKey();if(state.lastPractice!==today){let yesterday=dayKey(new Date(Date.now()-864e5));state.streak=state.lastPractice===yesterday?(state.streak||0)+1:1;state.lastPractice=today}if(!ok){state.errors.unshift({id:crypto.randomUUID(),topic:e.topic,prompt:e.prompt,given,answer:e.answer,meaning:studyPhrase(e).meaning,alts:e.alts||[],level:e.level,date:today,tries:0});state.errors=state.errors.slice(0,80)}state.sessions.push({date:today,topic:e.topic,ok});persist()}
 function showAnswer(){let e=activeSet[activeIndex],f=document.getElementById('exercise-feedback');f.className='feedback show ok';f.innerHTML=`Sugestão: <div class="answer">${escapeHtml(e.answer)}</div>`;if(e.pron)f.innerHTML+=`<div style="margin-top:5px">${escapeHtml(e.pron)}</div>`;record(e,false,'(abri a sugestão)');document.getElementById('check-btn').textContent='Próximo exercício';document.getElementById('check-btn').onclick=()=>{activeIndex++;renderExercise()}}
-function skipExercise(){activeIndex++;renderExercise()}
+let sessionOutcomes = [];
+function skipExercise() {
+  if (sessionOutcomes[activeIndex] !== 'answered') {
+    sessionOutcomes[activeIndex] = 'skipped';
+    const exercise = activeSet[activeIndex];
+    state.pendingExercises = state.pendingExercises || [];
+    if (!state.pendingExercises.some(item => item.id === exercise.id)) {
+      state.pendingExercises.push(exercise);
+    }
+    persist();
+  }
+  activeIndex++;
+  renderExercise();
+}
+
+function renderSessionSummary(host) {
+  const answered = sessionOutcomes.filter(value => value === 'answered').length;
+  const skipped = sessionOutcomes.filter(value => value === 'skipped').length;
+  const title = answered === 0 ? 'Você pulou todos os exercícios' :
+    skipped > 0 ? 'Sessão encerrada' : 'Sessão concluída';
+  host.innerHTML = `
+    <div class="card">
+      <h2>${englishInterface ? (answered === 0 ? 'You skipped every exercise' : skipped > 0 ? 'Session ended' : 'Session complete') : title}</h2>
+      <p>${answered} ${englishInterface ? 'answered' : 'respondidos'} · ${skipped} ${englishInterface ? 'skipped' : 'pulados'}</p>
+      <div class="session-actions">
+        ${skipped ? '<button class="btn" onclick="retrySkippedExercises()">' + (englishInterface ? 'Try skipped exercises' : 'Tentar os pulados') + '</button>' : ''}
+        <button class="btn secondary" onclick="startSession()">${englishInterface ? 'Start another session' : 'Fazer mais uma'}</button>
+      </div>
+    </div>`;
+}
+
+function retrySkippedExercises() {
+  activeSet = activeSet.filter((exercise, index) => sessionOutcomes[index] === 'skipped');
+  activeIndex = 0;
+  sessionOutcomes = activeSet.map(() => 'pending');
+  renderExercise();
+}
 function reviewAllErrors(){if(!state.errors.length){toast('Ainda não há erros guardados.');return}reviewQueue=[...state.errors.slice(0,8).map(x=>({word:x,isError:true}))];reviewIndex=0;renderReviewQuiz()}
 let reviewIndex=0;
 let reviewRenderRequest = 0;
