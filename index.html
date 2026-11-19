@@ -336,7 +336,7 @@ function toast(msg){let x=document.createElement('div');x.className='toast';x.te
 function go(page){if(document.getElementById('page-praticar').classList.contains('active'))savePracticeLocation();saveLocation(page);document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));document.getElementById('page-'+page).classList.add('active');document.querySelectorAll('.nav button').forEach(b=>b.classList.toggle('active',b.dataset.page===page));let names={inicio:'Início',praticar:'Praticar',revisar:'Revisar',caderno:'Meu caderno',progresso:'Progresso',adicionar:'Adicionar exercício'};document.getElementById('crumb-current').textContent=names[page];if(page==='revisar')renderReview();if(page==='caderno')renderWords();if(page==='progresso')renderProgress();if(page==='praticar')renderTemplates()}
 document.querySelectorAll('.nav button').forEach(b=>b.addEventListener('click',()=>go(b.dataset.page)));
 function renderTemplates(){let markupFor=list=>list.map(t=>`<button class="template" onclick="startTopic('${escapeHtml(t.name)}')"><span class="emoji">${t.icon}</span><b>${escapeHtml(t.label)}</b><small>${escapeHtml(t.desc)}</small></button>`).join('');document.getElementById('templates-home').innerHTML=markupFor(topics);let sel=document.getElementById('topic-filter'),prev=sel.value;sel.innerHTML='<option value="todos">Todos os temas</option>'+topics.map(t=>`<option value="${escapeHtml(t.name)}">${escapeHtml(t.label)}</option>`).join('');let extra=[...new Set(state.customExercises.map(e=>e.topic).filter(x=>!topics.some(t=>t.name===x)))];sel.innerHTML+=[...extra.map(x=>`<option value="${escapeHtml(x)}">${escapeHtml(x)}</option>`) ].join('');if(prev)sel.value=prev;let selected=sel.value||'todos';let visible=selected==='todos'?topics:topics.filter(t=>t.name===selected);document.getElementById('templates-practice').innerHTML=markupFor(visible);document.getElementById('topic-options').innerHTML=[...topics.map(t=>`<option value="${escapeHtml(t.name)}"></option>`),...extra.map(t=>`<option value="${escapeHtml(t)}"></option>`)].join('');document.getElementById('home-topics').innerHTML=topics.slice(0,4).map(t=>{let s=state.stats[t.name]||{total:0,correct:0},pct=s.total?Math.round(s.correct/s.total*100):0;return `<div class="topic-line"><span>${t.icon} ${escapeHtml(t.name)}</span><div class="bar"><i style="width:${pct}%"></i></div><strong>${s.total?pct+'%':'—'}</strong></div>`}).join('')}
-function startTopic(topic){go('praticar');document.getElementById('topic-filter').value=topic;renderTemplates();refreshStructureBrowser();startSession(topic)}
+function startTopic(topic){switchPracticeTopic(topic,true)}
 // Add optional topic files under exercicios/ next to index.html.
 const topicFiles = new Map([
   ['Dia a dia', 'dia-a-dia.json'],
@@ -353,6 +353,10 @@ let structureCatalogue = [];
 let selectedFamily = '';
 let practiceMode = 'Iniciante';
 let feedbackSnapshot = null;
+let activePracticeTopic = 'todos';
+const TOPIC_PROGRESS_KEY = 'pequenosPassosTopicProgressV1';
+let topicProgress = {};
+try { topicProgress = JSON.parse(localStorage.getItem(TOPIC_PROGRESS_KEY)) || {}; } catch {}
 const uiText = (pt,en) => englishInterface ? en : pt;
 
 async function loadTopicExercises(topic) {
@@ -468,9 +472,11 @@ function chooseStructureFamily(name) {
   startSession('Estruturas');
 }
 async function startSession(forcedTopic) {
+  savePracticeLocation();
   const request = ++sessionRequest;
   const topic = forcedTopic || document.getElementById('topic-filter').value || 'todos';
   const level = document.getElementById('level-filter').value || 'todos';
+  activePracticeTopic = topic;
   practiceMode = level === 'todos' ? 'Iniciante' : level;
   document.getElementById('topic-filter').value = topic;
   const selectedTopics = topic === 'todos' ? [...topicFiles.keys()] : [topic];
@@ -754,7 +760,7 @@ function exportData(){let blob=new Blob([JSON.stringify(state,null,2)],{type:'ap
 function importData(ev){let file=ev.target.files[0];if(!file)return;let r=new FileReader();r.onload=()=>{try{let d=JSON.parse(r.result);if(!Array.isArray(d.words)||!Array.isArray(d.errors))throw 0;state=Object.assign(fresh(),d);persist();toast('Backup restaurado.')}catch{toast('Não consegui ler esse arquivo de backup.')}ev.target.value=''};r.readAsText(file)}
 function resetProgress(){if(!confirm(translateInterface('Apagar sessões, revisões, exercícios criados e itens do caderno deste navegador?')))return;localStorage.removeItem(STORE);state=fresh();persist();toast('Dados recomeçados.')}
 document.getElementById('word-form').addEventListener('submit',saveWord);
-document.getElementById('topic-filter').addEventListener('change',()=>{activeSet=[];activeIndex=0;practiceDraft='';feedbackSnapshot=null;document.getElementById('exercise-host').innerHTML='';renderTemplates();refreshStructureBrowser();savePracticeLocation()});
+document.getElementById('topic-filter').addEventListener('change',()=>switchPracticeTopic(document.getElementById('topic-filter').value,false));
 document.getElementById('level-filter').addEventListener('change',()=>{practiceMode=document.getElementById('level-filter').value==='todos'?'Iniciante':document.getElementById('level-filter').value;practiceDraft='';feedbackSnapshot=null;if(activeSet.length)renderExercise();savePracticeLocation()});
 function renderAll(){let due=dueWords();document.getElementById('stat-due').textContent=due.length;document.getElementById('stat-streak').textContent=state.streak||0;document.getElementById('stat-done').textContent=(state.sessions||[]).length;document.getElementById('today-date').textContent=new Intl.DateTimeFormat(document.documentElement.lang,{weekday:'short',day:'numeric',month:'short'}).format(new Date()).replace('.','');renderTemplates();renderReview();renderWords();renderProgress();let pending=due.slice(0,2);document.getElementById('home-review-preview').innerHTML=pending.length?`<div class="review-list">${pending.map(w=>`<div class="review-item"><div><div class="en">${escapeHtml(w.en)}</div><div class="pt">${escapeHtml(w.pt)}</div></div><button class="btn small secondary" onclick="go('revisar')">Revisar</button></div>`).join('')}</div>`:`<div class="empty"><b>Tudo em dia.</b>Você pode salvar novas expressões ou começar outra prática.</div>`}
 renderAll();
@@ -813,14 +819,53 @@ function saveLocation(page) {
 }
 function savePracticeLocation() {
   const saved = readLocation();
-  saved.practice = {
-    topic: document.getElementById('topic-filter').value || 'todos',
-    level: document.getElementById('level-filter').value || 'todos',
+  const snapshot = {
+    topic: activePracticeTopic,
+    level: practiceMode,
     activeSet, activeIndex, sessionOutcomes, draft: practiceDraft, practiceMode, selectedFamily,
     search: document.getElementById('structure-search').value, feedbackSnapshot
   };
+  saved.practice = snapshot;
   writeLocation(saved);
+  if (activeSet.length) {
+    topicProgress[activePracticeTopic] = JSON.parse(JSON.stringify(snapshot));
+    try { localStorage.setItem(TOPIC_PROGRESS_KEY, JSON.stringify(topicProgress)); }
+    catch { toast(uiText('Não foi possível guardar o andamento neste navegador.','Could not save progress in this browser.')); }
+  }
 }
+function restoreTopicPractice(topic) {
+  const saved = topicProgress[topic];
+  if (!saved || !Array.isArray(saved.activeSet) || !saved.activeSet.length) return false;
+  activePracticeTopic = topic;
+  activeSet = saved.activeSet;
+  activeIndex = Math.min(Math.max(0,saved.activeIndex || 0),activeSet.length);
+  sessionOutcomes = saved.sessionOutcomes || activeSet.map(() => 'pending');
+  practiceMode = saved.practiceMode || 'Iniciante';
+  practiceDraft = saved.draft || '';
+  selectedFamily = saved.selectedFamily || '';
+  feedbackSnapshot = saved.feedbackSnapshot || null;
+  document.getElementById('level-filter').value = saved.level || practiceMode;
+  document.getElementById('structure-search').value = saved.search || '';
+  renderExercise();
+  return true;
+}
+function switchPracticeTopic(topic, startIfEmpty) {
+  savePracticeLocation();
+  ++sessionRequest;
+  activePracticeTopic = topic;
+  document.getElementById('topic-filter').value = topic;
+  activeSet = []; activeIndex = 0; sessionOutcomes = [];
+  practiceDraft = ''; feedbackSnapshot = null;
+  document.getElementById('structure-search').value = '';
+  document.getElementById('exercise-host').innerHTML = '';
+  go('praticar');
+  renderTemplates();
+  const restored = restoreTopicPractice(topic);
+  refreshStructureBrowser();
+  savePracticeLocation();
+  if (!restored && startIfEmpty) startSession(topic);
+}
+
 function saveReviewLocation() {
   const saved = readLocation();
   saved.page = 'revisar';
@@ -856,6 +901,7 @@ if (savedLocation.page && document.getElementById('page-' + savedLocation.page))
   }
   if (savedLocation.page === 'praticar' && savedLocation.practice) {
     const saved = savedLocation.practice;
+    activePracticeTopic = saved.topic || 'todos';
     document.getElementById('topic-filter').value = saved.topic || 'todos';
     document.getElementById('level-filter').value = saved.level || 'todos';
     renderTemplates();
