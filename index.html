@@ -544,8 +544,8 @@ async function refreshSavedPronunciation(exercise) {
     if (activeSet[activeIndex] === exercise) {
       const target = document.getElementById('study-pronunciation');
       if (target) target.textContent = hasPronunciation(exercise.pron) ? exercise.pron :
-        uiText('Pronúncia não disponível nesta frase. Confira se o estruturas.json está atualizado.',
-          'No guide available for this sentence. Check that estruturas.json is up to date.');
+        uiText('Pronúncia não disponível no JSON deste tema. Use o botão Ouvir como referência.',
+          'No pronunciation guide in this topic JSON. Use Listen as your reference.');
     }
   } finally { pronunciationRequests.delete(exercise); }
 }
@@ -589,7 +589,7 @@ function renderExercise() {
           <div><button class="btn small secondary" onclick="skipExercise()">Pular</button>
           <button id="check-btn" class="btn small" onclick="checkAnswer()">Conferir resposta</button></div>
         </div>
-        ${(exercise.pattern || hasPronunciation(exercise.pron)) && !challenge ? '<div class="pronunciation"><b>' + uiText('Pronúncia aproximada','Pronunciation guide') + '</b><p id="study-pronunciation" class="phonetic" lang="pt-BR" data-study-content>' + escapeHtml(hasPronunciation(exercise.pron) ? exercise.pron : uiText('Carregando pronúncia…','Loading pronunciation…')) + '</p></div>' : ''}
+        ${!challenge ? '<div class="pronunciation"><b>' + uiText('Pronúncia aproximada','Pronunciation guide') + '</b><p id="study-pronunciation" class="phonetic" lang="pt-BR" data-study-content>' + escapeHtml(hasPronunciation(exercise.pron) ? exercise.pron : uiText('Carregando pronúncia…','Loading pronunciation…')) + '</p></div>' : ''}
       </div>
     </div>`;
   const answerBox = document.getElementById('user-answer');
@@ -600,16 +600,37 @@ function renderExercise() {
   }
   if (sessionOutcomes[activeIndex] === 'answered') finishStudyFeedback();
   savePracticeLocation();
-  if (exercise.pattern && !challenge && !hasPronunciation(exercise.pron)) refreshSavedPronunciation(exercise);
+  if (!challenge && !hasPronunciation(exercise.pron)) refreshSavedPronunciation(exercise);
 }
 
-function changeStructureBlock(value) {
+let structureBlockRequest = 0;
+async function changeStructureBlock(value) {
+  const request = ++structureBlockRequest;
   const exercise = activeSet[activeIndex];
-  const next = activeSet.findIndex(e => e.pattern === exercise.pattern && e.selectedBlock === Number(value));
-  if (next >= 0) activeIndex = next;
+  const blockIndex = Number(value);
+  const part = exercise?.blocks?.[blockIndex];
+  if (!part) return;
+  const position = activeIndex;
+  const session = activeSet;
+  const latest = await loadTopicExercises(exercise.topic || 'Estruturas');
+  if (request !== structureBlockRequest || activeSet !== session || activeIndex !== position || activeSet[position] !== exercise) return;
+  const answer = exercise.pattern + ' ' + part.en + exercise.ending;
+  const fresh = latest.find(item => item.pattern === exercise.pattern && norm(item.answer) === norm(answer));
+  const replacement = fresh ? JSON.parse(JSON.stringify(fresh)) : {
+    ...exercise,
+    id: String(exercise.modelId || exercise.id) + '-block-' + blockIndex,
+    selectedBlock: blockIndex,
+    answer, listen: answer,
+    meaning: exercise.patternMeaning + ' ' + part.pt + exercise.ending,
+    prompt: exercise.patternMeaning + ' ' + part.pt + exercise.ending,
+    pron: ''
+  };
+  if (replacement.id !== exercise.id) sessionOutcomes[position] = 'pending';
+  activeSet[position] = replacement;
   practiceDraft = ''; feedbackSnapshot = null;
   renderExercise();
 }
+
 function toggleStudyEnglish() {
   const target = document.getElementById('study-english');
   if (!target.textContent.trim() || target.textContent.trim().endsWith('…')) {
