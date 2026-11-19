@@ -387,6 +387,7 @@ async function loadTopicExercises(topic) {
               answer: item.en + ' ' + part.en + (item.end || '.'),
               listen: item.en + ' ' + part.en + (item.end || '.'),
               alts: [],
+              pron: [item.pron, part.pron].filter(Boolean).join(' ') + (item.end || '.'),
               pattern: item.en,
               family: item.base || item.en,
               familyMeaning: item.basePt || '',
