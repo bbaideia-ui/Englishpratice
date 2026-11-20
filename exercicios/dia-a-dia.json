@@ -1,9 +1,104 @@
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67
+68
+69
+70
+71
+72
+73
+74
+75
+76
+77
+78
+79
+80
+81
+82
+83
+84
+85
+86
+87
+88
+89
+90
+91
+92
+93
+94
+95
 [
   {
     "id": "dia-a-dia-001",
     "level": "Iniciante",
     "kind": "pt-en",
-    "prompt": "Como você pediria um café para viagem?",
+    "prompt": "Eu gostaria de um café para viagem, por favor.",
     "answer": "I'd like a coffee to go, please.",
     "alts": [
       "I would like a coffee to go, please.",
@@ -12,28 +107,26 @@
     ],
     "pron": "aid láik â có-fi tâ gôu, plíz",
     "example": "Use “to go” para pedir algo para viagem.",
-    "listen": "I'd like a coffee to go, please."
+    "listen": "I'd like a coffee to go, please.",
+    "meaning": "Eu gostaria de um café para viagem, por favor."
   },
   {
     "id": "dia-a-dia-002",
     "level": "Iniciante",
-    "kind": "en-pt",
-    "prompt": "Traduza a pergunta do atendente: “What size would you like?”",
-    "answer": "Qual tamanho você gostaria?",
-    "alts": [
-      "Que tamanho você gostaria?",
-      "Qual tamanho você quer?",
-      "Qual tamanho você prefere?"
-    ],
+    "kind": "pt-en",
+    "prompt": "Qual tamanho você gostaria?",
+    "answer": "What size would you like?",
+    "alts": [],
     "pron": "uót sáiz uúd iú láik?",
     "example": "“Small”, “medium” e “large” indicam o tamanho do pedido.",
-    "listen": "What size would you like?"
+    "listen": "What size would you like?",
+    "meaning": "Qual tamanho você gostaria?"
   },
   {
     "id": "dia-a-dia-003",
     "level": "Iniciante",
     "kind": "conversation",
-    "prompt": "O atendente pergunta o tamanho. Peça um médio.",
+    "prompt": "Médio, por favor.",
     "dialogue": [
       [
         "ATENDENTE",
@@ -52,28 +145,26 @@
     ],
     "pron": "mí-di-âm, plíz",
     "example": "Depois de ouvir a pergunta, diga sua resposta em voz alta e escreva para conferir.",
-    "listen": "Medium, please."
+    "listen": "Medium, please.",
+    "meaning": "Médio, por favor."
   },
   {
     "id": "dia-a-dia-004",
     "level": "Iniciante",
-    "kind": "en-pt",
-    "prompt": "Traduza: “Would you like anything else?”",
-    "answer": "Você gostaria de mais alguma coisa?",
-    "alts": [
-      "Gostaria de mais alguma coisa?",
-      "Você quer mais alguma coisa?",
-      "Mais alguma coisa?"
-    ],
+    "kind": "pt-en",
+    "prompt": "Você gostaria de mais alguma coisa?",
+    "answer": "Would you like anything else?",
+    "alts": [],
     "pron": "uúd iú láik é-ni-thing éls?",
     "example": "Essa pergunta costuma vir quando o atendente está terminando de anotar seu pedido.",
-    "listen": "Would you like anything else?"
+    "listen": "Would you like anything else?",
+    "meaning": "Você gostaria de mais alguma coisa?"
   },
   {
     "id": "dia-a-dia-005",
     "level": "Iniciante",
     "kind": "pt-en",
-    "prompt": "O atendente pergunta se você quer mais alguma coisa. Responda: “Só isso, obrigado.”",
+    "prompt": "Só isso, obrigado.",
     "answer": "That's all, thank you.",
     "alts": [
       "That's all, thanks.",
@@ -82,13 +173,14 @@
     ],
     "pron": "dhéts ól, thénk iú",
     "example": "“That's all, thank you” é uma forma educada de encerrar o pedido.",
-    "listen": "That's all, thank you."
+    "listen": "That's all, thank you.",
+    "meaning": "Só isso, obrigado."
   },
   {
     "id": "dia-a-dia-006",
     "level": "Intermediário",
     "kind": "pt-en",
-    "prompt": "Você pediu um café para viagem, mas quer trocar o leite. Pergunte: “Posso pedir com leite de aveia?”",
+    "prompt": "Posso pedir com leite de aveia?",
     "answer": "Could I get that with oat milk?",
     "alts": [
       "Can I get that with oat milk?",
@@ -96,7 +188,6 @@
       "Can I have it with oat milk?"
     ],
     "pron": "kud ai guét dhét uíth ôut mílk?",
-    "example": "Você pode usar “with” para pedir um ingrediente e “without” para pedir que retirem um ingrediente.",
-    "listen": "Could I get that with oat milk?"
-  }
-]
+
+
+
