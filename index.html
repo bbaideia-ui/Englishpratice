@@ -1,10 +1,16 @@
 <!doctype html>
+
 <html lang="pt-BR">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="theme-color" content="#f7f6f2">
   <meta name="description" content="Pratique inglês em sessões curtas, guarde suas dúvidas e revise no momento certo.">
+  <script>
+    try {
+      if (localStorage.getItem('pequenosPassosTheme') === 'dark') document.documentElement.dataset.theme = 'dark';
+    } catch {}
+  </script>
   <title>Inglês em Pequenos Passos</title>
   <style>
 :root{--paper:#f7f6f2;--surface:#fff;--ink:#202c2b;--muted:#77827f;--line:#e8e9e2;--green:#17675d;--green-soft:#e5f2ec;--orange:#dc8650;--yellow:#f1c55f;--rose:#f7eae6;--shadow:0 14px 38px #283a3210;--radius:18px}
@@ -16,15 +22,36 @@
 .topic-scroll-frame { position: relative; }
 #topic-scroll-track { display: none; }
 @media (any-pointer: coarse) {
-  #home-topics { padding-right: 15px; scrollbar-width: none; }
-  #home-topics::-webkit-scrollbar { display: none; }
-  #topic-scroll-track:not([hidden]) {
-    display: block; position: absolute; right: 1px; top: 0; bottom: 0;
-    width: 5px; border-radius: 5px; background: #e5ebe8; pointer-events: none;
-  }
-  #topic-scroll-track i { display: block; width: 100%; border-radius: inherit; background: #71877e; }
+#home-topics { padding-right: 15px; scrollbar-width: none; }
+#home-topics::-webkit-scrollbar { display: none; }
+#topic-scroll-track:not([hidden]) {
+display: block; position: absolute; right: 1px; top: 0; bottom: 0;
+width: 5px; border-radius: 5px; background: #e5ebe8; pointer-events: none;
 }
+#topic-scroll-track i { display: block; width: 100%; border-radius: inherit; background: #71877e; }
+}
+
+ {
+color-scheme: dark;
+--paper: #151c1b; --surface: #202b29; --ink: #edf4ef; --muted: #b2c2bb;
+--line: #40504a; --green: #87d9c8; --green-soft: #29463d; --shadow: 0 14px 38px #0003;
+}
+[data-theme="dark"] :is(.sidebar,.session-card,.template,.exercise-box,.review-item,.word-item,.error-item,.date-pill,.field input,.field select,.field textarea,.select-row select,.exercise-box textarea) {
+background: var(--surface); color: var(--ink);
+}
+[data-theme="dark"] :is(.nav button,.field label,.topic-line strong,.pronunciation .phonetic) { color: var(--muted); }
+[data-theme="dark"] :is(.welcome,.brandmark) { background: #17584f; }
+[data-theme="dark"] .btn:not(.ghost):not(.secondary):not(.danger) { color: #102920; }
+[data-theme="dark"] :is(.nav button.active,.nav button:hover,.btn.secondary,.tag.green,.feedback.ok,.bubble.you) { background: var(--green-soft); color: var(--green); }
+[data-theme="dark"] :is(.sidebar-note,.stat .stat-icon,.prompt,.notice,.badge,.bubble,.pronunciation,.bar,.exercise-progress) { background: #304039; color: var(--ink); }
+[data-theme="dark"] :is(.tag:not(.green),.feedback.no,.btn.danger) { background: #4b372c; color: #ffd0a8; }
+[data-theme="dark"] .error-item .mistake { color: #ffad98; }
+[data-theme="dark"] .error-item .correct { color: var(--green); }
+[data-theme="dark"] [style*="background:#dcefe2"] { background: #315141 !important; color: var(--ink); }
+#theme-toggle[aria-pressed="true"] { background: var(--green-soft); color: var(--green); }
+.topbar { flex-wrap: wrap; gap: 8px; }
 </style>
+
 </head>
 <body>
 <div class="shell">
@@ -42,7 +69,7 @@
     <div class="sidebar-bottom">Seu espaço de prática pessoal</div>
   </aside>
   <main class="main">
-    <div class="topbar"><div class="crumb">INGLÊS EM PEQUENOS PASSOS <span style="padding:0 6px;color:#bdc4bf">/</span> <span id="crumb-current">Início</span></div><div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap"><button id="language-toggle" class="btn small ghost" type="button" lang="en">English</button><div class="date-pill" id="today-date"></div></div></div>
+    <div class="topbar"><div class="crumb">INGLÊS EM PEQUENOS PASSOS <span style="padding:0 6px;color:#bdc4bf">/</span> <span id="crumb-current">Início</span></div><div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap"><button id="theme-toggle" class="btn small ghost" type="button">Modo escuro</button><button id="language-toggle" class="btn small ghost" type="button" lang="en">English</button><div class="date-pill" id="today-date"></div></div></div>
     <section id="page-inicio" class="page active">
       <div class="welcome"><div><div class="eyebrow">SEU CANTINHO DE INGLÊS</div><h1>Seu inglês, um pouco por dia.</h1><p>Pratique situações reais, guarde o que quer lembrar e volte amanhã sem começar do zero.</p></div><button class="btn" onclick="startSession()">Começar 5 minutos <span aria-hidden="true">→</span></button></div>
       <div class="stats">
@@ -279,71 +306,84 @@ const translations = new Map(Object.entries({
 }));
 
 function translateInterface(text) {
-  if (!englishInterface) return text;
-  const value = text.trim();
-  if (translations.has(value)) return text.replace(value, translations.get(value));
-  return text
-    .replace(/^(\s*\d+) de (\d+)( · )(Iniciante|Intermediário|Desafio)$/, (_, a, b, separator, level) => a + ' of ' + b + separator + translations.get(level))
-    .replace(/^(\s*\d+) itens guardados$/, '$1 saved')
-    .replace(/^(\s*\d+) itens$/, '$1 items')
-    .replace(/^(\s*\d+) registros$/, '$1 records')
-    .replace(/^(\s*\d+%) de respostas corretas$/, '$1 correct answers')
-    .replace(/^Sua resposta anterior:/, 'Your previous answer:')
-    .replace(/^Sua tentativa:/, 'Your attempt:')
-    .replace(/^Sugestão:/, 'Suggested answer:')
-    .replace(/^Próxima:/, 'Next:')
-    .replace(/^Traduza(?: para o português| a mensagem)?:/, 'Translate:')
-    .replace(/^(Diga em inglês|Como dizer):/, 'Say this in English:')
-    .replace(/^(\S+ )(Dia a dia|Imigração|Trabalho|Tecnologia|Jogos|Estruturas)$/, (_, icon, topic) => icon + translations.get(topic))
-    .replace(/^(Dia a dia|Imigração|Trabalho|Tecnologia|Jogos|Estruturas) · (Iniciante|Intermediário|Desafio|TENTE DE NOVO|REVISÃO)$/, (_, topic, level) => translations.get(topic) + ' · ' + translations.get(level));
+if (!englishInterface) return text;
+const value = text.trim();
+if (translations.has(value)) return text.replace(value, translations.get(value));
+return text
+.replace(/^(\s*\d+) de (\d+)( · )(Iniciante|Intermediário|Desafio)$/, (, a, b, separator, level) => a + ' of ' + b + separator + translations.get(level))
+.replace(/^(\s*\d+) itens guardados$/, '$1 saved')
+.replace(/^(\s*\d+) itens$/, '$1 items')
+.replace(/^(\s*\d+) registros$/, '$1 records')
+.replace(/^(\s*\d+%) de respostas corretas$/, '$1 correct answers')
+.replace(/^Sua resposta anterior:/, 'Your previous answer:')
+.replace(/^Sua tentativa:/, 'Your attempt:')
+.replace(/^Sugestão:/, 'Suggested answer:')
+.replace(/^Próxima:/, 'Next:')
+.replace(/^Traduza(?: para o português| a mensagem)?:/, 'Translate:')
+.replace(/^(Diga em inglês|Como dizer):/, 'Say this in English:')
+.replace(/^(\S+ )(Dia a dia|Imigração|Trabalho|Tecnologia|Jogos|Estruturas)$/, (, icon, topic) => icon + translations.get(topic))
+.replace(/^(Dia a dia|Imigração|Trabalho|Tecnologia|Jogos|Estruturas) · (Iniciante|Intermediário|Desafio|TENTE DE NOVO|REVISÃO)$/, (_, topic, level) => translations.get(topic) + ' · ' + translations.get(level));
 }
+
+const themeToggle = document.getElementById('theme-toggle');
+function setTheme(dark) {
+document.documentElement.dataset.theme = dark ? 'dark' : 'light';
+themeToggle.textContent = englishInterface ? 'Dark mode' : 'Modo escuro';
+themeToggle.setAttribute('aria-pressed', String(dark));
+document.querySelector('meta[name="theme-color"]').content = dark ? '#151c1b' : '#f7f6f2';
+}
+setTheme(document.documentElement.dataset.theme === 'dark');
+themeToggle.addEventListener('click', () => {
+const dark = document.documentElement.dataset.theme !== 'dark';
+setTheme(dark);
+try { localStorage.setItem('pequenosPassosTheme', dark ? 'dark' : 'light'); } catch {}
+});
 
 const languageToggle = document.getElementById('language-toggle');
 languageToggle.addEventListener('click', () => {
-  localStorage.setItem(languageKey, englishInterface ? 'pt-BR' : 'en');
-  location.reload();
+localStorage.setItem(languageKey, englishInterface ? 'pt-BR' : 'en');
+location.reload();
 });
 
 if (englishInterface) {
-  languageToggle.textContent = 'Português';
-  languageToggle.lang = 'pt-BR';
-  document.documentElement.lang = 'en';
-  document.title = translateInterface(document.title);
-  const visit = node => {
-    if (node.nodeType === Node.TEXT_NODE) {
-      if (node.parentElement?.closest('script, style, textarea, .answer, .phonetic, .en, .pt, [data-study-content], .mini-dialogue .bubble:not(.you)')) return;
-      const translated = translateInterface(node.data);
-      if (translated !== node.data) node.data = translated;
-      return;
-    }
-    if (node.nodeType !== Node.ELEMENT_NODE) return;
-    if (node.tagName === 'OPTION' && !node.hasAttribute('value')) node.value = node.textContent;
-    for (const key of ['aria-label', 'placeholder']) {
-      if (node.hasAttribute(key)) node.setAttribute(key, translateInterface(node.getAttribute(key)));
-    }
-    for (const child of node.childNodes) visit(child);
-  };
-  visit(document.body);
-  new MutationObserver(records => {
-    for (const record of records) {
-      if (record.type === 'characterData') visit(record.target);
-      for (const node of record.addedNodes) visit(node);
-    }
-  }).observe(document.body, { subtree: true, childList: true, characterData: true });
+languageToggle.textContent = 'Português';
+languageToggle.lang = 'pt-BR';
+document.documentElement.lang = 'en';
+document.title = translateInterface(document.title);
+const visit = node => {
+if (node.nodeType === Node.TEXT_NODE) {
+if (node.parentElement?.closest('script, style, textarea, .answer, .phonetic, .en, .pt, [data-study-content], .mini-dialogue .bubble:not(.you)')) return;
+const translated = translateInterface(node.data);
+if (translated !== node.data) node.data = translated;
+return;
 }
-
+if (node.nodeType !== Node.ELEMENT_NODE) return;
+if (node.tagName === 'OPTION' && !node.hasAttribute('value')) node.value = node.textContent;
+for (const key of ['aria-label', 'placeholder']) {
+if (node.hasAttribute(key)) node.setAttribute(key, translateInterface(node.getAttribute(key)));
+}
+for (const child of node.childNodes) visit(child);
+};
+visit(document.body);
+new MutationObserver(records => {
+for (const record of records) {
+if (record.type === 'characterData') visit(record.target);
+for (const node of record.addedNodes) visit(node);
+}
+}).observe(document.body, { subtree: true, childList: true, characterData: true });
+}
 
 const STORE='pequenosPassosV1';
 const topics=[
- {name:'Dia a dia',label:'Conversa do dia a dia',icon:'☕',desc:'Café, compras, pedidos e conversas curtas.',accent:'green'},
- {name:'Imigração',label:'Imigração',icon:'🗂️',desc:'Formulários, entrevista e situações oficiais.',accent:'orange'},
- {name:'Trabalho',label:'Trabalho',icon:'🧰',desc:'Rotina, colegas, tarefas e comunicação.',accent:''},
- {name:'Tecnologia',label:'Tecnologia',icon:'💻',desc:'Dispositivos, aplicativos e solução de problemas.',accent:''},
- {name:'Jogos',label:'Jogos',icon:'🎮',desc:'Games, progresso, vídeos e recomendações.',accent:''},
- {name:'Estruturas',label:'Estruturas',icon:'💬',desc:'Monte frases trocando os blocos da estrutura.',accent:''},
- {name:'Gramática',label:'Gramática',icon:'📘',desc:'Entenda as regras com exemplos e exercícios curtos.',accent:''},
- {name:'Verbos e conjugação',parent:'Gramática',label:'Verbos e conjugação',icon:'📘',desc:'Pratique os verbos em frases curtas.',accent:''},
- {name:'Vocabulário',label:'Vocabulário',icon:'🔤',desc:'Aprenda palavras e pratique seu uso em frases.',accent:''}
+{name:'Dia a dia',label:'Conversa do dia a dia',icon:'☕',desc:'Café, compras, pedidos e conversas curtas.',accent:'green'},
+{name:'Imigração',label:'Imigração',icon:'🗂️',desc:'Formulários, entrevista e situações oficiais.',accent:'orange'},
+{name:'Trabalho',label:'Trabalho',icon:'🧰',desc:'Rotina, colegas, tarefas e comunicação.',accent:''},
+{name:'Tecnologia',label:'Tecnologia',icon:'💻',desc:'Dispositivos, aplicativos e solução de problemas.',accent:''},
+{name:'Jogos',label:'Jogos',icon:'🎮',desc:'Games, progresso, vídeos e recomendações.',accent:''},
+{name:'Estruturas',label:'Estruturas',icon:'💬',desc:'Monte frases trocando os blocos da estrutura.',accent:''},
+{name:'Gramática',label:'Gramática',icon:'📘',desc:'Entenda as regras com exemplos e exercícios curtos.',accent:''},
+{name:'Verbos e conjugação',parent:'Gramática',label:'Verbos e conjugação',icon:'📘',desc:'Pratique os verbos em frases curtas.',accent:''},
+{name:'Vocabulário',label:'Vocabulário',icon:'🔤',desc:'Aprenda palavras e pratique seu uso em frases.',accent:''}
 ];
 
 let state=loadState();let activeSet=[],activeIndex=0,reviewQueue=[];
@@ -353,23 +393,23 @@ function persist(){localStorage.setItem(STORE,JSON.stringify(state));renderAll()
 function norm(s){return String(s||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[’']/g,"'").replace(/[^a-z0-9\s']/g,' ').replace(/\s+/g,' ').trim()}
 function dueWords(){let today=dayKey();return state.words.filter(w=>!w.due||w.due<=today)}
 function dayKey(d=new Date()){return [d.getFullYear(),String(d.getMonth()+1).padStart(2,'0'),String(d.getDate()).padStart(2,'0')].join('-')}
-function escapeHtml(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function escapeHtml(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&','<':'<','>':'>','"':'"',"'":'''}[c]))}
 function toast(msg){let x=document.createElement('div');x.className='toast';x.textContent=msg;document.getElementById('toasts').appendChild(x);setTimeout(()=>x.remove(),2600)}
 function go(page){if(document.getElementById('page-praticar').classList.contains('active'))savePracticeLocation();saveLocation(page);document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));document.getElementById('page-'+page).classList.add('active');document.querySelectorAll('.nav button').forEach(b=>b.classList.toggle('active',b.dataset.page===page));let names={inicio:'Início',praticar:'Praticar',revisar:'Revisar',caderno:'Meu caderno',progresso:'Progresso',adicionar:'Adicionar exercício'};document.getElementById('crumb-current').textContent=names[page];if(page==='revisar')renderReview();if(page==='caderno')renderWords();if(page==='progresso')renderProgress();if(page==='praticar')renderTemplates()}
 document.querySelectorAll('.nav button').forEach(b=>b.addEventListener('click',()=>go(b.dataset.page)));
-function renderTemplates(){let markupFor=list=>list.map(t=>`<button class="template" onclick="startTopic('${escapeHtml(t.name)}')"><span class="emoji">${t.icon}</span><b>${escapeHtml(t.label)}</b><small>${escapeHtml(t.desc)}</small></button>`).join('');document.getElementById('templates-home').innerHTML=markupFor(topics.filter(t=>!t.parent));let sel=document.getElementById('topic-filter'),prev=sel.value;sel.innerHTML='<option value="todos">Todos os temas</option>'+topics.map(t=>`<option value="${escapeHtml(t.name)}">${escapeHtml(t.label)}</option>`).join('');let extra=[...new Set(state.customExercises.map(e=>e.topic).filter(x=>!topics.some(t=>t.name===x)))];sel.innerHTML+=[...extra.map(x=>`<option value="${escapeHtml(x)}">${escapeHtml(x)}</option>`) ].join('');if(prev)sel.value=prev;let selected=sel.value||'todos';let visible=selected==='todos'?topics.filter(t=>!t.parent):topics.filter(t=>t.name===selected);document.getElementById('templates-practice').innerHTML=markupFor(visible);document.getElementById('topic-options').innerHTML=[...topics.map(t=>`<option value="${escapeHtml(t.name)}"></option>`),...extra.map(t=>`<option value="${escapeHtml(t)}"></option>`)].join('');document.getElementById('home-topics').innerHTML=topics.concat(extra.map(name=>({name,icon:"✎"}))).map(t=>{let s=state.stats[t.name]||{total:0,correct:0},pct=s.total?Math.round(s.correct/s.total*100):0;return `<div class="topic-line"><span>${t.icon} ${escapeHtml(t.name)}</span><div class="bar"><i style="width:${pct}%"></i></div><strong>${s.total?pct+'%':'—'}</strong></div>`}).join('')}
+function renderTemplates(){let markupFor=list=>list.map(t=><button class="template" onclick="startTopic('${escapeHtml(t.name)}')"><span class="emoji">${t.icon}</span><b>${escapeHtml(t.label)}</b><small>${escapeHtml(t.desc)}</small></button>).join('');document.getElementById('templates-home').innerHTML=markupFor(topics.filter(t=>!t.parent));let sel=document.getElementById('topic-filter'),prev=sel.value;sel.innerHTML='<option value="todos">Todos os temas</option>'+topics.map(t=><option value="${escapeHtml(t.name)}">${escapeHtml(t.label)}</option>).join('');let extra=[...new Set(state.customExercises.map(e=>e.topic).filter(x=>!topics.some(t=>t.name===x)))];sel.innerHTML+=[...extra.map(x=><option value="${escapeHtml(x)}">${escapeHtml(x)}</option>) ].join('');if(prev)sel.value=prev;let selected=sel.value||'todos';let visible=selected==='todos'?topics.filter(t=>!t.parent):topics.filter(t=>t.name===selected);document.getElementById('templates-practice').innerHTML=markupFor(visible);document.getElementById('topic-options').innerHTML=[...topics.map(t=><option value="${escapeHtml(t.name)}"></option>),...extra.map(t=><option value="${escapeHtml(t)}"></option>)].join('');document.getElementById('home-topics').innerHTML=topics.concat(extra.map(name=>({name,icon:"✎"}))).map(t=>{let s=state.stats[t.name]||{total:0,correct:0},pct=s.total?Math.round(s.correct/s.total*100):0;return <div class="topic-line"><span>${t.icon} ${escapeHtml(t.name)}</span><div class="bar"><i style="width:${pct}%"></i></div><strong>${s.total?pct+'%':'—'}</strong></div>}).join('')}
 function startTopic(topic){switchPracticeTopic(topic,true)}
 // Add optional topic files under exercicios/ next to index.html.
 const topicFiles = new Map([
-  ['Dia a dia', 'dia-a-dia.json'],
-  ['Imigração', 'imigracao.json'],
-  ['Trabalho', 'trabalho.json'],
-  ['Tecnologia', 'tecnologia.json'],
-  ['Jogos', 'jogos.json'],
-  ['Estruturas', 'estruturas.json'],
-  ['Gramática', 'gramatica.json'],
-  ['Verbos e conjugação', 'conjugacao.json'],
-  ['Vocabulário', 'vocabulario.json']
+['Dia a dia', 'dia-a-dia.json'],
+['Imigração', 'imigracao.json'],
+['Trabalho', 'trabalho.json'],
+['Tecnologia', 'tecnologia.json'],
+['Jogos', 'jogos.json'],
+['Estruturas', 'estruturas.json'],
+['Gramática', 'gramatica.json'],
+['Verbos e conjugação', 'conjugacao.json'],
+['Vocabulário', 'vocabulario.json']
 ]);
 
 const exerciseFileCache = new Map();
@@ -385,217 +425,218 @@ try { topicProgress = JSON.parse(localStorage.getItem(TOPIC_PROGRESS_KEY)) || {}
 const uiText = (pt,en) => englishInterface ? en : pt;
 
 async function loadTopicExercises(topic) {
-  const filename = topicFiles.get(topic);
-  if (!filename) return [];
-  if (exerciseFileCache.has(topic)) return exerciseFileCache.get(topic);
+const filename = topicFiles.get(topic);
+if (!filename) return [];
+if (exerciseFileCache.has(topic)) return exerciseFileCache.get(topic);
 
-  const request = (async () => {
-    try {
-      const response = await fetch('./exercicios/' + filename, { cache: 'no-cache' });
-      if (response.status === 404) return [];
-      if (!response.ok) throw new Error('HTTP ' + response.status);
-      const items = await response.json();
-      if (!Array.isArray(items)) throw new Error('Expected an array of exercises');
+const request = (async () => {
+try {
+const response = await fetch('./exercicios/' + filename, { cache: 'no-cache' });
+if (response.status === 404) return [];
+if (!response.ok) throw new Error('HTTP ' + response.status);
+const items = await response.json();
+if (!Array.isArray(items)) throw new Error('Expected an array of exercises');
 
-      if (topic === 'Estruturas') {
-        return items.filter(item => item && typeof item.en === 'string' &&
-          typeof item.pt === 'string' && Array.isArray(item.blocks))
-          .flatMap((item, modelIndex) => item.blocks
-            .filter(part => part && typeof part.en === 'string' && typeof part.pt === 'string')
-            .map((part, blockIndex) => ({
-              id: 'structure-' + (item.id || modelIndex) + '-' + (part.id || blockIndex),
-              topic: 'Estruturas',
-              level: item.level || 'Iniciante',
-              kind: 'pt-en',
-              prompt: item.pt + ' ' + part.pt + (item.end || '.'),
-              meaning: item.pt + ' ' + part.pt + (item.end || '.'),
-              answer: item.en + ' ' + part.en + (item.end || '.'),
-              listen: item.en + ' ' + part.en + (item.end || '.'),
-              alts: [],
-              pron: [item.pron, part.pron].filter(value => typeof value === 'string' && value.trim()).join(' '),
-              pattern: item.en,
-              family: item.base || item.en,
-              familyMeaning: item.basePt || '',
-              modelId: item.id || String(modelIndex),
-              blocks: item.blocks.filter(value => value && typeof value.en === 'string' && typeof value.pt === 'string'),
-              patternMeaning: item.pt,
-              ending: item.end || '.',
-              selectedBlock: blockIndex
-            })));
-      }
-      const validItems = items.filter(item =>
-        item && typeof item.id === 'string' && item.id.trim() &&
-        typeof item.prompt === 'string' && item.prompt.trim() &&
-        typeof item.answer === 'string' && item.answer.trim() &&
-        ['Iniciante', 'Intermediário', 'Desafio'].includes(item.level) &&
-        ['pt-en', 'en-pt', 'conversation'].includes(item.kind)
-      );
-      return validItems.map(item => ({
-        id: item.id.trim(),
-        topic,
-        level: item.level,
-        kind: item.kind,
-        prompt: item.prompt,
-        meaning: typeof item.meaning === "string" ? item.meaning : "",
-        answer: item.answer,
-        alts: Array.isArray(item.alts) ? item.alts.filter(value => typeof value === 'string') : [],
-        dialogue: Array.isArray(item.dialogue) ? item.dialogue.filter(line =>
-          Array.isArray(line) && line.length === 2 && line.every(value => typeof value === 'string')
-        ) : [],
-        pron: typeof item.pron === 'string' ? item.pron : '',
-        example: typeof item.example === 'string' ? item.example : '',
-        listen: typeof item.listen === 'string' ? item.listen : item.kind === 'en-pt' ? item.prompt : item.answer
-      }));
-    } catch (error) {
-      exerciseFileCache.delete(topic);
-      console.warn('Could not load exercises from ' + filename, error);
-      return [];
-    }
-  })();
+  if (topic === 'Estruturas') {
+    return items.filter(item => item && typeof item.en === 'string' &&
+      typeof item.pt === 'string' && Array.isArray(item.blocks))
+      .flatMap((item, modelIndex) => item.blocks
+        .filter(part => part && typeof part.en === 'string' && typeof part.pt === 'string')
+        .map((part, blockIndex) => ({
+          id: 'structure-' + (item.id || modelIndex) + '-' + (part.id || blockIndex),
+          topic: 'Estruturas',
+          level: item.level || 'Iniciante',
+          kind: 'pt-en',
+          prompt: item.pt + ' ' + part.pt + (item.end || '.'),
+          meaning: item.pt + ' ' + part.pt + (item.end || '.'),
+          answer: item.en + ' ' + part.en + (item.end || '.'),
+          listen: item.en + ' ' + part.en + (item.end || '.'),
+          alts: [],
+          pron: [item.pron, part.pron].filter(value => typeof value === 'string' && value.trim()).join(' '),
+          pattern: item.en,
+          family: item.base || item.en,
+          familyMeaning: item.basePt || '',
+          modelId: item.id || String(modelIndex),
+          blocks: item.blocks.filter(value => value && typeof value.en === 'string' && typeof value.pt === 'string'),
+          patternMeaning: item.pt,
+          ending: item.end || '.',
+          selectedBlock: blockIndex
+        })));
+  }
+  const validItems = items.filter(item =>
+    item && typeof item.id === 'string' && item.id.trim() &&
+    typeof item.prompt === 'string' && item.prompt.trim() &&
+    typeof item.answer === 'string' && item.answer.trim() &&
+    ['Iniciante', 'Intermediário', 'Desafio'].includes(item.level) &&
+    ['pt-en', 'en-pt', 'conversation'].includes(item.kind)
+  );
+  return validItems.map(item => ({
+    id: item.id.trim(),
+    topic,
+    level: item.level,
+    kind: item.kind,
+    prompt: item.prompt,
+    meaning: typeof item.meaning === "string" ? item.meaning : "",
+    answer: item.answer,
+    alts: Array.isArray(item.alts) ? item.alts.filter(value => typeof value === 'string') : [],
+    dialogue: Array.isArray(item.dialogue) ? item.dialogue.filter(line =>
+      Array.isArray(line) && line.length === 2 && line.every(value => typeof value === 'string')
+    ) : [],
+    pron: typeof item.pron === 'string' ? item.pron : '',
+    example: typeof item.example === 'string' ? item.example : '',
+    listen: typeof item.listen === 'string' ? item.listen : item.kind === 'en-pt' ? item.prompt : item.answer
+  }));
+} catch (error) {
+  exerciseFileCache.delete(topic);
+  console.warn('Could not load exercises from ' + filename, error);
+  return [];
+}
 
-  exerciseFileCache.set(topic, request);
-  return request;
+})();
+
+exerciseFileCache.set(topic, request);
+return request;
 }
 
 async function refreshStructureBrowser() {
-  const panel = document.getElementById('structure-browser');
-  const visible = document.getElementById('topic-filter').value === 'Estruturas';
-  panel.style.display = visible ? 'block' : 'none';
-  if (!visible) return;
-  structureCatalogue = await loadTopicExercises('Estruturas');
-  if (document.getElementById('topic-filter').value !== 'Estruturas') return;
-  filterStructureFamilies();
+const panel = document.getElementById('structure-browser');
+const visible = document.getElementById('topic-filter').value === 'Estruturas';
+panel.style.display = visible ? 'block' : 'none';
+if (!visible) return;
+structureCatalogue = await loadTopicExercises('Estruturas');
+if (document.getElementById('topic-filter').value !== 'Estruturas') return;
+filterStructureFamilies();
 }
 function filterStructureFamilies() {
-  const query = document.getElementById('structure-search').value.trim().toLocaleLowerCase('en');
-  const families = [...new Set(structureCatalogue.map(e => e.family || e.pattern))]
-    .sort((a,b) => a.localeCompare(b,'en',{sensitivity:'base'}))
-    .filter(name => name.toLocaleLowerCase('en').startsWith(query));
-  const select = document.getElementById('structure-family');
-  select.innerHTML = '<option value="">' + uiText('Selecione uma estrutura','Choose a pattern') + '</option>' +
-    families.map(name => '<option value="' + escapeHtml(name) + '">' + escapeHtml(name) + '…</option>').join('');
-  select.value = families.includes(selectedFamily) ? selectedFamily : '';
-  document.getElementById('structure-suggestions').innerHTML = families.map(name =>
-    '<button type="button" class="template" role="listitem" style="display:block;width:100%;margin:6px 0" data-family="' + escapeHtml(name) + '" onclick="chooseStructureFamily(this.dataset.family)">' +
-    '<b class="en" lang="en" data-study-content>' + escapeHtml(name) + '…</b>' +
-    '<small class="pt" lang="pt-BR" data-study-content>' + escapeHtml(familyMeaning(name)) + '</small></button>').join('');
-  document.getElementById('structure-count').textContent = families.length + ' ' + uiText('estruturas encontradas. Escolha uma para explorar suas variações.','patterns found. Choose one to explore its variations.');
-  savePracticeLocation();
+const query = document.getElementById('structure-search').value.trim().toLocaleLowerCase('en');
+const families = [...new Set(structureCatalogue.map(e => e.family || e.pattern))]
+.sort((a,b) => a.localeCompare(b,'en',{sensitivity:'base'}))
+.filter(name => name.toLocaleLowerCase('en').startsWith(query));
+const select = document.getElementById('structure-family');
+select.innerHTML = '<option value="">' + uiText('Selecione uma estrutura','Choose a pattern') + '</option>' +
+families.map(name => '<option value="' + escapeHtml(name) + '">' + escapeHtml(name) + '…</option>').join('');
+select.value = families.includes(selectedFamily) ? selectedFamily : '';
+document.getElementById('structure-suggestions').innerHTML = families.map(name =>
+'<button type="button" class="template" role="listitem" style="display:block;width:100%;margin:6px 0" data-family="' + escapeHtml(name) + '" onclick="chooseStructureFamily(this.dataset.family)">' +
+'<b class="en" lang="en" data-study-content>' + escapeHtml(name) + '…</b>' +
+'<small class="pt" lang="pt-BR" data-study-content>' + escapeHtml(familyMeaning(name)) + '</small></button>').join('');
+document.getElementById('structure-count').textContent = families.length + ' ' + uiText('estruturas encontradas. Escolha uma para explorar suas variações.','patterns found. Choose one to explore its variations.');
+savePracticeLocation();
 }
 function familyMeaning(name) {
-  const known = {"Can I":"Posso", "Could I":"Eu poderia", "May I":"Posso", "I want to":"Eu quero", "I need to":"Eu preciso", "I'd like to":"Eu gostaria de", "I'm going to":"Eu vou", "I have to":"Eu tenho que", "I don't want to":"Eu não quero", "I don't need to":"Eu não preciso", "Do I need to":"Eu preciso", "Do I have to":"Eu tenho que", "How can I":"Como posso", "How do I":"Como faço para", "When can I":"Quando posso", "Where can I":"Onde posso", "I'd prefer to":"Eu preferiria", "I'm planning to":"Estou planejando", "I'm hoping to":"Espero", "Is it possible to":"É possível", "Would it be possible to":"Seria possível", "What's the best way to":"Qual é a melhor maneira de", "Could you show me how to":"Você poderia me mostrar como", "Could you explain how to":"Você poderia me explicar como", "I'm not sure how to":"Não sei bem como"};
-  const item = structureCatalogue.find(e => (e.family || e.pattern) === name);
-  return item?.familyMeaning || known[name] || item?.patternMeaning || '';
+const known = {"Can I":"Posso", "Could I":"Eu poderia", "May I":"Posso", "I want to":"Eu quero", "I need to":"Eu preciso", "I'd like to":"Eu gostaria de", "I'm going to":"Eu vou", "I have to":"Eu tenho que", "I don't want to":"Eu não quero", "I don't need to":"Eu não preciso", "Do I need to":"Eu preciso", "Do I have to":"Eu tenho que", "How can I":"Como posso", "How do I":"Como faço para", "When can I":"Quando posso", "Where can I":"Onde posso", "I'd prefer to":"Eu preferiria", "I'm planning to":"Estou planejando", "I'm hoping to":"Espero", "Is it possible to":"É possível", "Would it be possible to":"Seria possível", "What's the best way to":"Qual é a melhor maneira de", "Could you show me how to":"Você poderia me mostrar como", "Could you explain how to":"Você poderia me explicar como", "I'm not sure how to":"Não sei bem como"};
+const item = structureCatalogue.find(e => (e.family || e.pattern) === name);
+return item?.familyMeaning || known[name] || item?.patternMeaning || '';
 }
 function nextStructureFamily() {
-  const families = [...new Set(structureCatalogue.map(e => e.family || e.pattern))].sort((a,b) => a.localeCompare(b,'en'));
-  const next = families[families.indexOf(selectedFamily) + 1];
-  if (next) { document.getElementById('structure-search').value = ''; chooseStructureFamily(next); }
+const families = [...new Set(structureCatalogue.map(e => e.family || e.pattern))].sort((a,b) => a.localeCompare(b,'en'));
+const next = families[families.indexOf(selectedFamily) + 1];
+if (next) { document.getElementById('structure-search').value = ''; chooseStructureFamily(next); }
 }
 function chooseStructureFamily(name) {
-  if (!name) return;
-  selectedFamily = name;
-  startSession('Estruturas');
+if (!name) return;
+selectedFamily = name;
+startSession('Estruturas');
 }
 async function startSession(forcedTopic) {
-  savePracticeLocation();
-  const request = ++sessionRequest;
-  const topic = forcedTopic || document.getElementById('topic-filter').value || 'todos';
-  const level = document.getElementById('level-filter').value || 'todos';
-  activePracticeTopic = topic;
-  practiceMode = level === 'todos' ? 'Iniciante' : level;
-  document.getElementById('topic-filter').value = topic;
-  const selectedTopics = topic === 'todos' ? [...topicFiles.keys()] : [topic];
-  const externalExercises = (await Promise.all(selectedTopics.map(loadTopicExercises))).flat();
-  if (request !== sessionRequest) return;
-  const unique = new Map([...(state.pendingExercises || []), ...externalExercises, ...state.customExercises].map(exercise => [exercise.id, exercise]));
-  let list = [...unique.values()].filter(exercise => topic === 'todos' || exercise.topic === topic);
-  if (topic === 'Estruturas') {
-    structureCatalogue = externalExercises;
-    const families = [...new Set(list.map(e => e.family || e.pattern))].sort((a,b) => a.localeCompare(b,'en'));
-    if (!families.includes(selectedFamily)) selectedFamily = families[0] || '';
-    list = list.filter(e => (e.family || e.pattern) === selectedFamily)
-      .sort((a,b) => a.pattern.localeCompare(b.pattern,'en') || a.selectedBlock - b.selectedBlock);
-    activeSet = list;
-  } else {
-    const pendingIds = new Set((state.pendingExercises || []).map(item => item.id));
-    const pending = list.filter(item => pendingIds.has(item.id));
-    const others = list.filter(item => !pendingIds.has(item.id)).sort(() => Math.random() - .5);
-    activeSet = [...pending,...others].slice(0,4);
-  }
-  if (!activeSet.length) { toast(uiText('Ainda não há exercícios nesse tema.','No exercises in this topic yet.')); return; }
-  activeIndex = 0; practiceDraft = ''; feedbackSnapshot = null;
-  sessionOutcomes = activeSet.map(() => 'pending');
-  go('praticar');
-  refreshStructureBrowser();
-  renderExercise();
+savePracticeLocation();
+const request = ++sessionRequest;
+const topic = forcedTopic || document.getElementById('topic-filter').value || 'todos';
+const level = document.getElementById('level-filter').value || 'todos';
+activePracticeTopic = topic;
+practiceMode = level === 'todos' ? 'Iniciante' : level;
+document.getElementById('topic-filter').value = topic;
+const selectedTopics = topic === 'todos' ? [...topicFiles.keys()] : [topic];
+const externalExercises = (await Promise.all(selectedTopics.map(loadTopicExercises))).flat();
+if (request !== sessionRequest) return;
+const unique = new Map([...(state.pendingExercises || []), ...externalExercises, ...state.customExercises].map(exercise => [exercise.id, exercise]));
+let list = [...unique.values()].filter(exercise => topic === 'todos' || exercise.topic === topic);
+if (topic === 'Estruturas') {
+structureCatalogue = externalExercises;
+const families = [...new Set(list.map(e => e.family || e.pattern))].sort((a,b) => a.localeCompare(b,'en'));
+if (!families.includes(selectedFamily)) selectedFamily = families[0] || '';
+list = list.filter(e => (e.family || e.pattern) === selectedFamily)
+.sort((a,b) => a.pattern.localeCompare(b.pattern,'en') || a.selectedBlock - b.selectedBlock);
+activeSet = list;
+} else {
+const pendingIds = new Set((state.pendingExercises || []).map(item => item.id));
+const pending = list.filter(item => pendingIds.has(item.id));
+const others = list.filter(item => !pendingIds.has(item.id)).sort(() => Math.random() - .5);
+activeSet = [...pending,...others].slice(0,4);
+}
+if (!activeSet.length) { toast(uiText('Ainda não há exercícios nesse tema.','No exercises in this topic yet.')); return; }
+activeIndex = 0; practiceDraft = ''; feedbackSnapshot = null;
+sessionOutcomes = activeSet.map(() => 'pending');
+go('praticar');
+refreshStructureBrowser();
+renderExercise();
 }
 
 function extractStudyText(text) {
-  const value = String(text || '').trim();
-  const quoted = value.match(/[“"]([^”"]+)[”"]/);
-  if (quoted) return quoted[1];
-  return value.replace(/^(?:Traduza(?: para o português| a mensagem)?|Translate|Diga em inglês|Como dizer|Say this in English)\s*:\s*/i, '');
+const value = String(text || '').trim();
+const quoted = value.match(/“"[”"]/);
+if (quoted) return quoted[1];
+return value.replace(/^(?:Traduza(?: para o português| a mensagem)?|Translate|Diga em inglês|Como dizer|Say this in English)\s*:\s*/i, '');
 }
 
 function studyPhrase(exercise) {
-  const fromEnglish = exercise.kind === 'en-pt';
-  return {
-    english: fromEnglish
-      ? extractStudyText(exercise.listen || exercise.prompt)
-      : exercise.answer,
-    meaning: exercise.meaning || (fromEnglish
-      ? exercise.answer
-      : extractStudyText(exercise.prompt))
-  };
+const fromEnglish = exercise.kind === 'en-pt';
+return {
+english: fromEnglish
+? extractStudyText(exercise.listen || exercise.prompt)
+: exercise.answer,
+meaning: exercise.meaning || (fromEnglish
+? exercise.answer
+: extractStudyText(exercise.prompt))
+};
 }
 
 function hasPronunciation(value) {
-  return typeof value === 'string' && /[a-zà-ÿ]/i.test(value);
+return typeof value === 'string' && /[a-zà-ÿ]/i.test(value);
 }
 const pronunciationRequests = new WeakSet();
 async function refreshSavedPronunciation(exercise) {
-  if (pronunciationRequests.has(exercise)) return;
-  pronunciationRequests.add(exercise);
-  try {
-    const latest = await loadTopicExercises(exercise.topic || 'Estruturas');
-    // Older saved sessions contain copies of exercises made before pronunciation existed.
-    const fresh = latest.find(item => item.id === exercise.id && norm(item.answer) === norm(exercise.answer)) ||
-      latest.find(item => norm(item.answer) === norm(exercise.answer));
-    if (fresh && hasPronunciation(fresh.pron)) {
-      exercise.pron = fresh.pron;
-      if (activeSet.includes(exercise)) savePracticeLocation();
-    }
-    if (activeSet[activeIndex] === exercise) {
-      const target = document.getElementById('study-pronunciation');
-      if (target) target.textContent = hasPronunciation(exercise.pron) ? exercise.pron :
-        uiText('Pronúncia não disponível no JSON deste tema. Use o botão Ouvir como referência.',
-          'No pronunciation guide in this topic JSON. Use Listen as your reference.');
-    }
-  } finally { pronunciationRequests.delete(exercise); }
+if (pronunciationRequests.has(exercise)) return;
+pronunciationRequests.add(exercise);
+try {
+const latest = await loadTopicExercises(exercise.topic || 'Estruturas');
+// Older saved sessions contain copies of exercises made before pronunciation existed.
+const fresh = latest.find(item => item.id === exercise.id && norm(item.answer) === norm(exercise.answer)) ||
+latest.find(item => norm(item.answer) === norm(exercise.answer));
+if (fresh && hasPronunciation(fresh.pron)) {
+exercise.pron = fresh.pron;
+if (activeSet.includes(exercise)) savePracticeLocation();
+}
+if (activeSet[activeIndex] === exercise) {
+const target = document.getElementById('study-pronunciation');
+if (target) target.textContent = hasPronunciation(exercise.pron) ? exercise.pron :
+uiText('Pronúncia não disponível no JSON deste tema. Use o botão Ouvir como referência.',
+'No pronunciation guide in this topic JSON. Use Listen as your reference.');
+}
+} finally { pronunciationRequests.delete(exercise); }
 }
 
 function renderExercise() {
-  const host = document.getElementById('exercise-host');
-  savePracticeLocation();
-  if (activeIndex >= activeSet.length) {
-    renderSessionSummary(host);
-    return;
-  }
-  const exercise = activeSet[activeIndex];
-  const phrase = studyPhrase(exercise);
-  const intermediate = practiceMode === 'Intermediário';
-  const challenge = practiceMode === 'Desafio';
-  const wordButtons = text => text.split(/\s+/).map(word =>
-    '<button type="button" class="linkbtn" style="font-size:inherit;padding:4px" lang="en" data-word="' +
-    escapeHtml(word) + '" onclick="speak(this.dataset.word)">' + escapeHtml(word) + '</button>'
-  ).join(' ');
-  const selectedPart = exercise.pattern && exercise.blocks[exercise.selectedBlock || 0];
-  const words = exercise.pattern && selectedPart
-    ? '<span class="structure-fixed" title="Estrutura fixa">' + wordButtons(exercise.pattern) + '</span> ' +
-      wordButtons(selectedPart.en + exercise.ending)
-    : wordButtons(phrase.english);
-  host.innerHTML = `
+const host = document.getElementById('exercise-host');
+savePracticeLocation();
+if (activeIndex >= activeSet.length) {
+renderSessionSummary(host);
+return;
+}
+const exercise = activeSet[activeIndex];
+const phrase = studyPhrase(exercise);
+const intermediate = practiceMode === 'Intermediário';
+const challenge = practiceMode === 'Desafio';
+const wordButtons = text => text.split(/\s+/).map(word =>
+'<button type="button" class="linkbtn" style="font-size:inherit;padding:4px" lang="en" data-word="' +
+ escapeHtml(word) + '" onclick="speak(this.dataset.word)">' + escapeHtml(word) + '</button>'
+).join(' ');
+const selectedPart = exercise.pattern && exercise.blocks[exercise.selectedBlock || 0];
+const words = exercise.pattern && selectedPart
+? '<span class="structure-fixed" title="Estrutura fixa">' + wordButtons(exercise.pattern) + '</span> ' +
+wordButtons(selectedPart.en + exercise.ending)
+: wordButtons(phrase.english);
+host.innerHTML = 
     <div class="exercise">
       <div class="exercise-head"><span class="tag green">${escapeHtml(exercise.topic)}</span>
       <span class="duration">${activeIndex + 1} de ${activeSet.length} · ${escapeHtml(uiText(practiceMode,({Iniciante:"Beginner",Intermediário:"Intermediate",Desafio:"Challenge"})[practiceMode]))}</span></div>
@@ -616,119 +657,119 @@ function renderExercise() {
         </div>
         ${!challenge ? '<div class="pronunciation"><b>' + uiText('Pronúncia aproximada','Pronunciation guide') + '</b><p id="study-pronunciation" class="phonetic" lang="pt-BR" data-study-content>' + escapeHtml(hasPronunciation(exercise.pron) ? exercise.pron : uiText('Carregando pronúncia…','Loading pronunciation…')) + '</p></div>' : ''}
       </div>
-    </div>`;
-  const answerBox = document.getElementById('user-answer');
-  if (answerBox) answerBox.value = practiceDraft;
-  if (feedbackSnapshot && feedbackSnapshot.index === activeIndex) {
-    const box = document.getElementById('exercise-feedback');
-    box.className = feedbackSnapshot.className; box.innerHTML = feedbackSnapshot.html;
-  }
-  if (sessionOutcomes[activeIndex] === 'answered') finishStudyFeedback();
-  savePracticeLocation();
-  if (!challenge && !hasPronunciation(exercise.pron)) refreshSavedPronunciation(exercise);
+    </div>;
+const answerBox = document.getElementById('user-answer');
+if (answerBox) answerBox.value = practiceDraft;
+if (feedbackSnapshot && feedbackSnapshot.index === activeIndex) {
+const box = document.getElementById('exercise-feedback');
+box.className = feedbackSnapshot.className; box.innerHTML = feedbackSnapshot.html;
+}
+if (sessionOutcomes[activeIndex] === 'answered') finishStudyFeedback();
+savePracticeLocation();
+if (!challenge && !hasPronunciation(exercise.pron)) refreshSavedPronunciation(exercise);
 }
 
 let structureBlockRequest = 0;
 async function changeStructureBlock(value) {
-  const request = ++structureBlockRequest;
-  const exercise = activeSet[activeIndex];
-  const blockIndex = Number(value);
-  const part = exercise?.blocks?.[blockIndex];
-  if (!part) return;
-  const position = activeIndex;
-  const session = activeSet;
-  const latest = await loadTopicExercises(exercise.topic || 'Estruturas');
-  if (request !== structureBlockRequest || activeSet !== session || activeIndex !== position || activeSet[position] !== exercise) return;
-  const answer = exercise.pattern + ' ' + part.en + exercise.ending;
-  const fresh = latest.find(item => item.pattern === exercise.pattern && norm(item.answer) === norm(answer));
-  const replacement = fresh ? JSON.parse(JSON.stringify(fresh)) : {
-    ...exercise,
-    id: String(exercise.modelId || exercise.id) + '-block-' + blockIndex,
-    selectedBlock: blockIndex,
-    answer, listen: answer,
-    meaning: exercise.patternMeaning + ' ' + part.pt + exercise.ending,
-    prompt: exercise.patternMeaning + ' ' + part.pt + exercise.ending,
-    pron: ''
-  };
-  if (replacement.id !== exercise.id) sessionOutcomes[position] = 'pending';
-  activeSet[position] = replacement;
-  practiceDraft = ''; feedbackSnapshot = null;
-  renderExercise();
+const request = ++structureBlockRequest;
+const exercise = activeSet[activeIndex];
+const blockIndex = Number(value);
+const part = exercise?.blocks?.[blockIndex];
+if (!part) return;
+const position = activeIndex;
+const session = activeSet;
+const latest = await loadTopicExercises(exercise.topic || 'Estruturas');
+if (request !== structureBlockRequest || activeSet !== session || activeIndex !== position || activeSet[position] !== exercise) return;
+const answer = exercise.pattern + ' ' + part.en + exercise.ending;
+const fresh = latest.find(item => item.pattern === exercise.pattern && norm(item.answer) === norm(answer));
+const replacement = fresh ? JSON.parse(JSON.stringify(fresh)) : {
+...exercise,
+id: String(exercise.modelId || exercise.id) + '-block-' + blockIndex,
+selectedBlock: blockIndex,
+answer, listen: answer,
+meaning: exercise.patternMeaning + ' ' + part.pt + exercise.ending,
+prompt: exercise.patternMeaning + ' ' + part.pt + exercise.ending,
+pron: ''
+};
+if (replacement.id !== exercise.id) sessionOutcomes[position] = 'pending';
+activeSet[position] = replacement;
+practiceDraft = ''; feedbackSnapshot = null;
+renderExercise();
 }
 
 function toggleStudyEnglish() {
-  const target = document.getElementById('study-english');
-  if (!target.textContent.trim() || target.textContent.trim().endsWith('…')) {
-    target.textContent = studyPhrase(activeSet[activeIndex]).english;
-    target.hidden = false;
-  } else target.hidden = !target.hidden;
+const target = document.getElementById('study-english');
+if (!target.textContent.trim() || target.textContent.trim().endsWith('…')) {
+target.textContent = studyPhrase(activeSet[activeIndex]).english;
+target.hidden = false;
+} else target.hidden = !target.hidden;
 }
 
 function finishStudyFeedback() {
-  const button = document.getElementById('check-btn');
-  button.textContent = 'Próximo exercício';
-  button.onclick = () => { activeIndex++; practiceDraft = ''; feedbackSnapshot = null; renderExercise(); };
+const button = document.getElementById('check-btn');
+button.textContent = 'Próximo exercício';
+button.onclick = () => { activeIndex++; practiceDraft = ''; feedbackSnapshot = null; renderExercise(); };
 }
 
 function checkAnswer() {
-  const exercise = activeSet[activeIndex];
-  const phrase = studyPhrase(exercise);
-  const given = document.getElementById('user-answer').value.trim();
-  if (!given) { toast('Escreva sua resposta ou toque em “Ver sugestão”.'); return; }
-  const choices = [phrase.english, ...(exercise.kind === 'en-pt' ? [] : exercise.alts || [])];
-  const correct = choices.some(value => norm(value) === norm(given));
-  if (sessionOutcomes[activeIndex] === 'answered') return;
-  sessionOutcomes[activeIndex] = 'answered';
-  state.pendingExercises = (state.pendingExercises || []).filter(item => item.id !== exercise.id);
-  record({...exercise, answer:phrase.english}, correct, given);
-  const feedback = document.getElementById('exercise-feedback');
-  feedback.className = 'feedback show ' + (correct ? 'ok' : 'no');
-  const expectedWords = phrase.english.split(/\s+/);
-  const typedWords = given.split(/\s+/);
-  const corrected = expectedWords.map((word,index) =>
-    norm(word) === norm(typedWords[index] || '') ? escapeHtml(word) :
-    '<mark style="background:#dcefe2">' + escapeHtml(word) + '</mark>'
-  ).join(' ');
-  feedback.innerHTML = correct ? '✓ Muito bem.' :
-    '<p>Sua tentativa: ' + escapeHtml(given) + '</p><p class="en" lang="en"><b>Frase correta</b><br>' +
-    corrected + '</p><p>As palavras destacadas diferem da sua escrita nessa posição.</p>';
-  feedbackSnapshot = {index:activeIndex,className:feedback.className,html:feedback.innerHTML};
-  practiceDraft = given;
-  savePracticeLocation();
-  finishStudyFeedback();
+const exercise = activeSet[activeIndex];
+const phrase = studyPhrase(exercise);
+const given = document.getElementById('user-answer').value.trim();
+if (!given) { toast('Escreva sua resposta ou toque em “Ver sugestão”.'); return; }
+const choices = [phrase.english, ...(exercise.kind === 'en-pt' ? [] : exercise.alts || [])];
+const correct = choices.some(value => norm(value) === norm(given));
+if (sessionOutcomes[activeIndex] === 'answered') return;
+sessionOutcomes[activeIndex] = 'answered';
+state.pendingExercises = (state.pendingExercises || []).filter(item => item.id !== exercise.id);
+record({...exercise, answer:phrase.english}, correct, given);
+const feedback = document.getElementById('exercise-feedback');
+feedback.className = 'feedback show ' + (correct ? 'ok' : 'no');
+const expectedWords = phrase.english.split(/\s+/);
+const typedWords = given.split(/\s+/);
+const corrected = expectedWords.map((word,index) =>
+norm(word) === norm(typedWords[index] || '') ? escapeHtml(word) :
+'<mark style="background:#dcefe2">' + escapeHtml(word) + '</mark>'
+).join(' ');
+feedback.innerHTML = correct ? '✓ Muito bem.' :
+'<p>Sua tentativa: ' + escapeHtml(given) + '</p><p class="en" lang="en"><b>Frase correta</b><br>' +
+corrected + '</p><p>As palavras destacadas diferem da sua escrita nessa posição.</p>';
+feedbackSnapshot = {index:activeIndex,className:feedback.className,html:feedback.innerHTML};
+practiceDraft = given;
+savePracticeLocation();
+finishStudyFeedback();
 }
 
 function showAnswer() {
-  const feedback = document.getElementById('exercise-feedback');
-  feedback.className = 'feedback show ok';
-  feedback.innerHTML = '<div class="en" lang="en">' + escapeHtml(studyPhrase(activeSet[activeIndex]).english) + '</div>';
+const feedback = document.getElementById('exercise-feedback');
+feedback.className = 'feedback show ok';
+feedback.innerHTML = '<div class="en" lang="en">' + escapeHtml(studyPhrase(activeSet[activeIndex]).english) + '</div>';
 }
 function record(e,ok,given){let s=state.stats[e.topic]||(state.stats[e.topic]={total:0,correct:0});s.total++;if(ok)s.correct++;let today=dayKey();if(state.lastPractice!==today){let yesterday=dayKey(new Date(Date.now()-864e5));state.streak=state.lastPractice===yesterday?(state.streak||0)+1:1;state.lastPractice=today}if(!ok){state.errors.unshift({id:crypto.randomUUID(),topic:e.topic,prompt:e.prompt,given,answer:e.answer,meaning:studyPhrase(e).meaning,alts:e.alts||[],level:e.level,date:today,tries:0});state.errors=state.errors.slice(0,80)}state.sessions.push({date:today,topic:e.topic,ok});persist()}
 
 let sessionOutcomes = [];
 let practiceDraft = '';
 function skipExercise() {
-  if (sessionOutcomes[activeIndex] !== 'answered') {
-    sessionOutcomes[activeIndex] = 'skipped';
-    const exercise = activeSet[activeIndex];
-    state.pendingExercises = state.pendingExercises || [];
-    if (!state.pendingExercises.some(item => item.id === exercise.id)) {
-      state.pendingExercises.push(exercise);
-    }
-    persist();
-  }
-  activeIndex++;
-  practiceDraft = ''; feedbackSnapshot = null;
-  renderExercise();
+if (sessionOutcomes[activeIndex] !== 'answered') {
+sessionOutcomes[activeIndex] = 'skipped';
+const exercise = activeSet[activeIndex];
+state.pendingExercises = state.pendingExercises || [];
+if (!state.pendingExercises.some(item => item.id === exercise.id)) {
+state.pendingExercises.push(exercise);
+}
+persist();
+}
+activeIndex++;
+practiceDraft = ''; feedbackSnapshot = null;
+renderExercise();
 }
 
 function renderSessionSummary(host) {
-  const answered = sessionOutcomes.filter(value => value === 'answered').length;
-  const skipped = sessionOutcomes.filter(value => value === 'skipped').length;
-  savePracticeLocation();
-  const title = answered === 0 ? 'Você pulou todos os exercícios' :
-    skipped > 0 ? 'Sessão encerrada' : 'Sessão concluída';
-  host.innerHTML = `
+const answered = sessionOutcomes.filter(value => value === 'answered').length;
+const skipped = sessionOutcomes.filter(value => value === 'skipped').length;
+savePracticeLocation();
+const title = answered === 0 ? 'Você pulou todos os exercícios' :
+skipped > 0 ? 'Sessão encerrada' : 'Sessão concluída';
+host.innerHTML = 
     <div class="card">
       <h2>${englishInterface ? (answered === 0 ? 'You skipped every exercise' : skipped > 0 ? 'Session ended' : 'Session complete') : title}</h2>
       <p>${answered} ${englishInterface ? 'answered' : 'respondidos'} · ${skipped} ${englishInterface ? 'skipped' : 'pulados'}</p>
@@ -737,40 +778,40 @@ function renderSessionSummary(host) {
         ${skipped ? '<button class="btn" onclick="retrySkippedExercises()">' + (englishInterface ? 'Try skipped exercises' : 'Tentar os pulados') + '</button>' : ''}
         <button class="btn secondary" onclick="startSession()">${englishInterface ? 'Start another session' : 'Fazer mais uma'}</button>
       </div>
-    </div>`;
+    </div>;
 }
 
 function retrySkippedExercises() {
-  activeSet = activeSet.filter((exercise, index) => sessionOutcomes[index] === 'skipped');
-  activeIndex = 0;
-  sessionOutcomes = activeSet.map(() => 'pending');
-  practiceDraft = ''; feedbackSnapshot = null;
-  renderExercise();
+activeSet = activeSet.filter((exercise, index) => sessionOutcomes[index] === 'skipped');
+activeIndex = 0;
+sessionOutcomes = activeSet.map(() => 'pending');
+practiceDraft = ''; feedbackSnapshot = null;
+renderExercise();
 }
 function reviewAllErrors(){if(!state.errors.length){toast('Ainda não há erros guardados.');return}reviewQueue=[...state.errors.slice(0,8).map(x=>({word:x,isError:true}))];reviewIndex=0;renderReviewQuiz()}
 let reviewIndex=0;
 let reviewRenderRequest = 0;
 async function reviewMeaning(entry) {
-  if (entry.meaning || entry.pt) return entry.meaning || entry.pt;
-  const exercises = await loadTopicExercises(entry.topic);
-  const match = exercises.find(exercise => exercise.prompt === entry.prompt ||
-    norm(studyPhrase(exercise).english) === norm(entry.answer));
-  if (match) {
-    entry.meaning = studyPhrase(match).meaning;
-    return entry.meaning;
-  }
-  return entry.prompt || '';
+if (entry.meaning || entry.pt) return entry.meaning || entry.pt;
+const exercises = await loadTopicExercises(entry.topic);
+const match = exercises.find(exercise => exercise.prompt === entry.prompt ||
+norm(studyPhrase(exercise).english) === norm(entry.answer));
+if (match) {
+entry.meaning = studyPhrase(match).meaning;
+return entry.meaning;
+}
+return entry.prompt || '';
 }
 async function renderReviewQuiz() {
-  const request = ++reviewRenderRequest;
-  const item = reviewQueue[reviewIndex];
-  if (!item) { clearReviewLocation(); renderReview(); toast('Revisão concluída.'); return; }
-  saveReviewLocation();
-  const entry = item.word;
-  const meaning = await reviewMeaning(entry);
-  if (request !== reviewRenderRequest) return;
-  const sentence = entry.answer || entry.en;
-  document.getElementById('review-list').innerHTML = `
+const request = ++reviewRenderRequest;
+const item = reviewQueue[reviewIndex];
+if (!item) { clearReviewLocation(); renderReview(); toast('Revisão concluída.'); return; }
+saveReviewLocation();
+const entry = item.word;
+const meaning = await reviewMeaning(entry);
+if (request !== reviewRenderRequest) return;
+const sentence = entry.answer || entry.en;
+document.getElementById('review-list').innerHTML = 
     <div class="exercise-box">
       <span class="tag orange">${escapeHtml(entry.topic)} · TENTE DE NOVO</span>
       <h2 class="en" lang="en" data-study-content>${escapeHtml(sentence)}</h2>
@@ -785,57 +826,57 @@ async function renderReviewQuiz() {
         <button class="btn small ghost" data-text="${escapeHtml(sentence)}" onclick="showReviewSuggestion(this.dataset.text)">Ver sugestão</button>
         <button id="review-check" class="btn small" onclick="checkReview()">Conferir</button>
       </div>
-    </div>`;
-  const draft = readLocation().draft;
-  if (draft && draft.id === entry.id) document.getElementById('review-answer').value = draft.text;
+    </div>;
+const draft = readLocation().draft;
+if (draft && draft.id === entry.id) document.getElementById('review-answer').value = draft.text;
 }
 function showReviewSuggestion(text) {
-  const feedback = document.getElementById('review-feedback');
-  feedback.className = 'feedback show ok';
-  feedback.innerHTML = '<div class="en" lang="en">' + escapeHtml(text) + '</div>';
+const feedback = document.getElementById('review-feedback');
+feedback.className = 'feedback show ok';
+feedback.innerHTML = '<div class="en" lang="en">' + escapeHtml(text) + '</div>';
 }
 function checkReview() {
-  const entry = reviewQueue[reviewIndex].word;
-  const given = document.getElementById('review-answer').value.trim();
-  if (!given) return;
-  const expected = entry.answer || entry.en;
-  const correct = [expected, ...(entry.alts || [])].some(value => norm(value) === norm(given));
-  const feedback = document.getElementById('review-feedback');
-  feedback.className = 'feedback show ' + (correct ? 'ok' : 'no');
-  feedback.innerHTML = correct ? '✓ Muito bem.' :
-    '<p>Sua tentativa: ' + escapeHtml(given) + '</p><div class="en" lang="en">Frase correta: ' + escapeHtml(expected) + '</div>';
-  if (correct) {
-    state.reviewCount++;
-    state.errors = state.errors.filter(error => error.id !== entry.id);
-    localStorage.setItem(STORE, JSON.stringify(state));
-  }
-  const button = document.getElementById('review-check');
-  button.textContent = 'Próximo exercício';
-  button.onclick = () => { reviewIndex++; renderReviewQuiz(); };
+const entry = reviewQueue[reviewIndex].word;
+const given = document.getElementById('review-answer').value.trim();
+if (!given) return;
+const expected = entry.answer || entry.en;
+const correct = [expected, ...(entry.alts || [])].some(value => norm(value) === norm(given));
+const feedback = document.getElementById('review-feedback');
+feedback.className = 'feedback show ' + (correct ? 'ok' : 'no');
+feedback.innerHTML = correct ? '✓ Muito bem.' :
+'<p>Sua tentativa: ' + escapeHtml(given) + '</p><div class="en" lang="en">Frase correta: ' + escapeHtml(expected) + '</div>';
+if (correct) {
+state.reviewCount++;
+state.errors = state.errors.filter(error => error.id !== entry.id);
+localStorage.setItem(STORE, JSON.stringify(state));
+}
+const button = document.getElementById('review-check');
+button.textContent = 'Próximo exercício';
+button.onclick = () => { reviewIndex++; renderReviewQuiz(); };
 }
 function speak(text){if(!('speechSynthesis'in window)){toast('A leitura em voz alta não está disponível neste navegador.');return}speechSynthesis.cancel();let u=new SpeechSynthesisUtterance(text);u.lang='en-US';u.rate=.86;speechSynthesis.speak(u)}
 function speakCurrent(){
-  const exercise = activeSet[activeIndex] || dailyExercise;
-  if (exercise) speak(exercise.listen || exercise.answer);
+const exercise = activeSet[activeIndex] || dailyExercise;
+if (exercise) speak(exercise.listen || exercise.answer);
 }
 function allWords(){return state.words}
 function intervalFor(w){return [1,3,7,14,30][Math.min(w.stage||0,4)]}
-function renderReview(){let words=dueWords();document.getElementById('due-label').textContent=words.length+' itens';document.getElementById('review-nav-count').textContent=words.length?`· ${words.length}`:'';document.getElementById('review-list').innerHTML=words.length?words.map(w=>`<div class="review-item" id="review-${w.id}"><div><div class="en">${escapeHtml(w.en)} <button class="linkbtn" data-text="${escapeHtml(w.en)}" onclick="speak(this.dataset.text)" aria-label="Ouvir expressão">🔊</button></div><div class="pt" id="translation-${w.id}" style="display:none">${escapeHtml(w.pt)}</div><div class="meta"><span class="badge">${escapeHtml(w.topic||'Meu caderno')}</span>${w.pron?`<span class="badge">${escapeHtml(w.pron)}</span>`:''}</div></div><div class="review-actions"><button class="btn small ghost" onclick="revealWord('${w.id}')">Ver resposta</button><span id="grade-${w.id}" style="display:none"><button class="btn small secondary" onclick="gradeWord('${w.id}',false)">Difícil</button><button class="btn small" onclick="gradeWord('${w.id}',true)">Fácil</button></span></div></div>`).join(''):`<div class="empty"><b>Nenhuma expressão vence hoje.</b>Guarde uma frase no caderno ou aproveite para fazer uma sessão curta.</div>`;document.getElementById('error-label').textContent=state.errors.length+' registros';document.getElementById('error-list').innerHTML=state.errors.length?state.errors.slice(0,30).map(e=>`<div class="error-item"><div><span class="badge">${escapeHtml(e.topic)} · ${escapeHtml(e.level)}</span><h3 class="en" lang="en" data-study-content style="margin:8px 0">${escapeHtml(e.answer)}</h3><p class="pt" lang="pt-BR" data-study-content>${escapeHtml(e.meaning || e.prompt)}</p><div class="mistake">Sua tentativa: ${escapeHtml(e.given)}</div><div class="correct">Sugestão: ${escapeHtml(e.answer)}</div></div><button class="btn small ghost" onclick="practiceError('${e.id}')">Tentar de novo</button></div>`).join(''):`<div class="empty"><b>Seu histórico está limpo.</b>Quando uma resposta escapar, ela aparece aqui com a correção.</div>`}
-function revealWord(id){let t=document.getElementById('translation-'+id),g=document.getElementById('grade-'+id),b=document.querySelector(`#review-${CSS.escape(id)} .review-actions > button`);if(t)t.style.display='block';if(g)g.style.display='inline-flex';if(b)b.style.display='none'}
+function renderReview(){let words=dueWords();document.getElementById('due-label').textContent=words.length+' itens';document.getElementById('review-nav-count').textContent=words.length?· ${words.length}:'';document.getElementById('review-list').innerHTML=words.length?words.map(w=><div class="review-item" id="review-${w.id}"><div><div class="en">${escapeHtml(w.en)} <button class="linkbtn" data-text="${escapeHtml(w.en)}" onclick="speak(this.dataset.text)" aria-label="Ouvir expressão">🔊</button></div><div class="pt" id="translation-${w.id}" style="display:none">${escapeHtml(w.pt)}</div><div class="meta"><span class="badge">${escapeHtml(w.topic||'Meu caderno')}</span>${w.pron?<span class="badge">${escapeHtml(w.pron)}</span>:''}</div></div><div class="review-actions"><button class="btn small ghost" onclick="revealWord('${w.id}')">Ver resposta</button><span id="grade-${w.id}" style="display:none"><button class="btn small secondary" onclick="gradeWord('${w.id}',false)">Difícil</button><button class="btn small" onclick="gradeWord('${w.id}',true)">Fácil</button></span></div></div>).join(''):<div class="empty"><b>Nenhuma expressão vence hoje.</b>Guarde uma frase no caderno ou aproveite para fazer uma sessão curta.</div>;document.getElementById('error-label').textContent=state.errors.length+' registros';document.getElementById('error-list').innerHTML=state.errors.length?state.errors.slice(0,30).map(e=><div class="error-item"><div><span class="badge">${escapeHtml(e.topic)} · ${escapeHtml(e.level)}</span><h3 class="en" lang="en" data-study-content style="margin:8px 0">${escapeHtml(e.answer)}</h3><p class="pt" lang="pt-BR" data-study-content>${escapeHtml(e.meaning || e.prompt)}</p><div class="mistake">Sua tentativa: ${escapeHtml(e.given)}</div><div class="correct">Sugestão: ${escapeHtml(e.answer)}</div></div><button class="btn small ghost" onclick="practiceError('${e.id}')">Tentar de novo</button></div>).join(''):<div class="empty"><b>Seu histórico está limpo.</b>Quando uma resposta escapar, ela aparece aqui com a correção.</div>}
+function revealWord(id){let t=document.getElementById('translation-'+id),g=document.getElementById('grade-'+id),b=document.querySelector(#review-${CSS.escape(id)} .review-actions > button);if(t)t.style.display='block';if(g)g.style.display='inline-flex';if(b)b.style.display='none'}
 function gradeWord(id,easy){let w=state.words.find(w=>w.id===id);if(!w)return;w.stage=easy?Math.min(4,(w.stage||0)+1):0;let due=new Date();due.setDate(due.getDate()+intervalFor(w));w.due=dayKey(due);state.reviewCount++;persist();toast(easy?'Ótimo, ela volta mais tarde.':'Tudo bem, vamos rever amanhã.')}
 function practiceError(id){let e=state.errors.find(x=>x.id===id);if(!e)return;reviewQueue=[{word:e,isError:true}];reviewIndex=0;renderReviewQuiz()}
 function saveWord(ev){ev.preventDefault();let w={id:crypto.randomUUID(),en:document.getElementById('word-en').value.trim(),pt:document.getElementById('word-pt').value.trim(),pron:document.getElementById('word-pron').value.trim(),topic:document.getElementById('word-topic').value.trim()||'Meu caderno',example:document.getElementById('word-example').value.trim(),stage:0,due:dayKey()};state.words.unshift(w);persist();ev.target.reset();toast('Expressão guardada. Ela aparece na revisão de hoje.')}
-function renderWords(){let q=norm(document.getElementById('word-search')?.value||'');let list=allWords().filter(w=>norm(w.en+' '+w.pt+' '+w.topic).includes(q));document.getElementById('word-count-text').textContent=state.words.length+' itens guardados';document.getElementById('word-list').innerHTML=list.length?list.map(w=>`<div class="word-item"><div><div class="en">${escapeHtml(w.en)} <button class="linkbtn" data-text="${escapeHtml(w.en)}" onclick="speak(this.dataset.text)" aria-label="Ouvir inglês">🔊</button></div><div class="pt">${escapeHtml(w.pt)}</div>${w.example?`<div class="pt" style="margin-top:5px">Ex.: ${escapeHtml(w.example)}</div>`:''}<div class="meta"><span class="badge">${escapeHtml(w.topic||'Meu caderno')}</span>${w.pron?`<span class="badge">${escapeHtml(w.pron)}</span>`:''}<span class="badge">${w.due<=dayKey()?'Revisar hoje':'Próxima: '+w.due}</span></div></div><button class="btn small danger" onclick="deleteWord('${w.id}')">Remover</button></div>`).join(''):`<div class="empty"><b>Seu caderno está esperando por você.</b>Adicione uma frase de uma conversa, mensagem ou sessão.</div>`}
+function renderWords(){let q=norm(document.getElementById('word-search')?.value||'');let list=allWords().filter(w=>norm(w.en+' '+w.pt+' '+w.topic).includes(q));document.getElementById('word-count-text').textContent=state.words.length+' itens guardados';document.getElementById('word-list').innerHTML=list.length?list.map(w=><div class="word-item"><div><div class="en">${escapeHtml(w.en)} <button class="linkbtn" data-text="${escapeHtml(w.en)}" onclick="speak(this.dataset.text)" aria-label="Ouvir inglês">🔊</button></div><div class="pt">${escapeHtml(w.pt)}</div>${w.example?<div class="pt" style="margin-top:5px">Ex.: ${escapeHtml(w.example)}</div>:''}<div class="meta"><span class="badge">${escapeHtml(w.topic||'Meu caderno')}</span>${w.pron?<span class="badge">${escapeHtml(w.pron)}</span>:''}<span class="badge">${w.due<=dayKey()?'Revisar hoje':'Próxima: '+w.due}</span></div></div><button class="btn small danger" onclick="deleteWord('${w.id}')">Remover</button></div>).join(''):<div class="empty"><b>Seu caderno está esperando por você.</b>Adicione uma frase de uma conversa, mensagem ou sessão.</div>}
 function deleteWord(id){state.words=state.words.filter(w=>w.id!==id);persist()}
 function saveExercise(ev){ev.preventDefault();let topic=document.getElementById('new-topic').value.trim();let prompt=document.getElementById('new-prompt').value.trim();let answer=document.getElementById('new-answer').value.trim();let e={id:'custom-'+crypto.randomUUID(),topic,level:document.getElementById('new-level').value,kind:document.getElementById('new-kind').value,prompt,answer,alts:[],pron:document.getElementById('new-pron').value.trim(),example:document.getElementById('new-example').value.trim(),listen:answer};state.customExercises.unshift(e);persist();ev.target.reset();toast('Exercício adicionado às suas práticas.');go('praticar')}
-function renderProgress(){let stats=state.stats||{},correct=Object.values(stats).reduce((a,s)=>a+s.correct,0),total=Object.values(stats).reduce((a,s)=>a+s.total,0);document.getElementById('progress-correct').textContent=correct;document.getElementById('progress-reviews').textContent=state.reviewCount||0;document.getElementById('progress-topics').textContent=Object.keys(stats).length;let all=[...topics.map(t=>({name:t.name,label:t.label,icon:t.icon})),...Object.keys(stats).filter(n=>!topics.some(t=>t.name===n)).map(n=>({name:n,label:n,icon:'✎'}))];document.getElementById('progress-topics-list').innerHTML=all.map(t=>{let s=stats[t.name]||{total:0,correct:0},p=s.total?Math.round(s.correct/s.total*100):0;return `<div class="progress-card"><div class="title"><span>${t.icon} ${escapeHtml(t.label)}</span><span>${s.total?s.correct+'/'+s.total:'—'}</span></div><div class="caption">${s.total?`${p}% de respostas corretas`:'Ainda sem sessões'}</div><div class="bar"><i style="width:${p}%"></i></div></div>`}).join('');}
+function renderProgress(){let stats=state.stats||{},correct=Object.values(stats).reduce((a,s)=>a+s.correct,0),total=Object.values(stats).reduce((a,s)=>a+s.total,0);document.getElementById('progress-correct').textContent=correct;document.getElementById('progress-reviews').textContent=state.reviewCount||0;document.getElementById('progress-topics').textContent=Object.keys(stats).length;let all=[...topics.map(t=>({name:t.name,label:t.label,icon:t.icon})),...Object.keys(stats).filter(n=>!topics.some(t=>t.name===n)).map(n=>({name:n,label:n,icon:'✎'}))];document.getElementById('progress-topics-list').innerHTML=all.map(t=>{let s=stats[t.name]||{total:0,correct:0},p=s.total?Math.round(s.correct/s.total*100):0;return <div class="progress-card"><div class="title"><span>${t.icon} ${escapeHtml(t.label)}</span><span>${s.total?s.correct+'/'+s.total:'—'}</span></div><div class="caption">${s.total?${p}% de respostas corretas:'Ainda sem sessões'}</div><div class="bar"><i style="width:${p}%"></i></div></div>}).join('');}
 function exportData(){let blob=new Blob([JSON.stringify(state,null,2)],{type:'application/json'}),a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='meu-ingles-backup.json';a.click();URL.revokeObjectURL(a.href);toast('Backup baixado.')}
 function importData(ev){let file=ev.target.files[0];if(!file)return;let r=new FileReader();r.onload=()=>{try{let d=JSON.parse(r.result);if(!Array.isArray(d.words)||!Array.isArray(d.errors))throw 0;state=Object.assign(fresh(),d);persist();toast('Backup restaurado.')}catch{toast('Não consegui ler esse arquivo de backup.')}ev.target.value=''};r.readAsText(file)}
 function resetProgress(){if(!confirm(translateInterface('Apagar sessões, revisões, exercícios criados e itens do caderno deste navegador?')))return;localStorage.removeItem(STORE);state=fresh();persist();toast('Dados recomeçados.')}
 document.getElementById('word-form').addEventListener('submit',saveWord);
 document.getElementById('topic-filter').addEventListener('change',()=>switchPracticeTopic(document.getElementById('topic-filter').value,false));
 document.getElementById('level-filter').addEventListener('change',()=>{practiceMode=document.getElementById('level-filter').value==='todos'?'Iniciante':document.getElementById('level-filter').value;practiceDraft='';feedbackSnapshot=null;if(activeSet.length)renderExercise();savePracticeLocation()});
-function renderAll(){let due=dueWords();document.getElementById('stat-due').textContent=due.length;document.getElementById('stat-streak').textContent=state.streak||0;document.getElementById('stat-done').textContent=(state.sessions||[]).length;document.getElementById('today-date').textContent=new Intl.DateTimeFormat(document.documentElement.lang,{weekday:'short',day:'numeric',month:'short'}).format(new Date()).replace('.','');renderTemplates();renderReview();renderWords();renderProgress();let pending=due.slice(0,2);document.getElementById('home-review-preview').innerHTML=pending.length?`<div class="review-list">${pending.map(w=>`<div class="review-item"><div><div class="en">${escapeHtml(w.en)}</div><div class="pt">${escapeHtml(w.pt)}</div></div><button class="btn small secondary" onclick="go('revisar')">Revisar</button></div>`).join('')}</div>`:`<div class="empty"><b>Tudo em dia.</b>Você pode salvar novas expressões ou começar outra prática.</div>`}
+function renderAll(){let due=dueWords();document.getElementById('stat-due').textContent=due.length;document.getElementById('stat-streak').textContent=state.streak||0;document.getElementById('stat-done').textContent=(state.sessions||[]).length;document.getElementById('today-date').textContent=new Intl.DateTimeFormat(document.documentElement.lang,{weekday:'short',day:'numeric',month:'short'}).format(new Date()).replace('.','');renderTemplates();renderReview();renderWords();renderProgress();let pending=due.slice(0,2);document.getElementById('home-review-preview').innerHTML=pending.length?<div class="review-list">${pending.map(w=><div class="review-item"><div><div class="en">${escapeHtml(w.en)}</div><div class="pt">${escapeHtml(w.pt)}</div></div><button class="btn small secondary" onclick="go('revisar')">Revisar</button></div>).join('')}</div>:<div class="empty"><b>Tudo em dia.</b>Você pode salvar novas expressões ou começar outra prática.</div>}
 renderAll();
 
 let dailyExercise;
@@ -845,174 +886,174 @@ const listenButton = document.getElementById('daily-listen');
 const anotherPhraseButton = document.getElementById('another-phrase');
 
 function renderHomePhrase() {
-  dailyExercise = homePhrases[homePhraseIndex];
-  if (!dailyExercise) return;
-  const phrase = studyPhrase(dailyExercise);
-  const title = document.getElementById('daily-title');
-  const subtitle = document.getElementById('daily-subtitle');
-  title.classList.add('en');
-  title.lang = 'en';
-  title.setAttribute('data-study-content', '');
-  subtitle.classList.add('pt');
-  subtitle.lang = 'pt-BR';
-  subtitle.setAttribute('data-study-content', '');
-  title.textContent = phrase.english;
-  subtitle.textContent = phrase.meaning;
-  const topic = topics.find(item => item.name === dailyExercise.topic);
-  document.getElementById('daily-tag').textContent = topic ? topic.label : dailyExercise.topic;
-  listenButton.disabled = false;
-  anotherPhraseButton.disabled = homePhrases.length < 2;
+dailyExercise = homePhrases[homePhraseIndex];
+if (!dailyExercise) return;
+const phrase = studyPhrase(dailyExercise);
+const title = document.getElementById('daily-title');
+const subtitle = document.getElementById('daily-subtitle');
+title.classList.add('en');
+title.lang = 'en';
+title.setAttribute('data-study-content', '');
+subtitle.classList.add('pt');
+subtitle.lang = 'pt-BR';
+subtitle.setAttribute('data-study-content', '');
+title.textContent = phrase.english;
+subtitle.textContent = phrase.meaning;
+const topic = topics.find(item => item.name === dailyExercise.topic);
+document.getElementById('daily-tag').textContent = topic ? topic.label : dailyExercise.topic;
+listenButton.disabled = false;
+anotherPhraseButton.disabled = homePhrases.length < 2;
 }
 
 function nextHomePhrase() {
-  if (homePhrases.length < 2) return;
-  if ('speechSynthesis' in window) speechSynthesis.cancel();
-  homePhraseIndex = (homePhraseIndex + 1) % homePhrases.length;
-  renderHomePhrase();
+if (homePhrases.length < 2) return;
+if ('speechSynthesis' in window) speechSynthesis.cancel();
+homePhraseIndex = (homePhraseIndex + 1) % homePhrases.length;
+renderHomePhrase();
 }
 
 Promise.all([...topicFiles.keys()].map(loadTopicExercises)).then(groups => {
-  homePhrases = groups.flat();
-  renderHomePhrase();
+homePhrases = groups.flat();
+renderHomePhrase();
 });
 
 const LOCATION_KEY = 'pequenosPassosLocationV1';
 function readLocation() {
-  try { return JSON.parse(sessionStorage.getItem(LOCATION_KEY)) || {}; }
-  catch { return {}; }
+try { return JSON.parse(sessionStorage.getItem(LOCATION_KEY)) || {}; }
+catch { return {}; }
 }
 function writeLocation(value) {
-  try { sessionStorage.setItem(LOCATION_KEY, JSON.stringify(value)); }
-  catch {}
+try { sessionStorage.setItem(LOCATION_KEY, JSON.stringify(value)); }
+catch {}
 }
 function saveLocation(page) {
-  const saved = readLocation();
-  saved.page = page;
-  writeLocation(saved);
+const saved = readLocation();
+saved.page = page;
+writeLocation(saved);
 }
 function savePracticeLocation() {
-  const saved = readLocation();
-  const snapshot = {
-    topic: activePracticeTopic,
-    level: practiceMode,
-    activeSet, activeIndex, sessionOutcomes, draft: practiceDraft, practiceMode, selectedFamily,
-    search: document.getElementById('structure-search').value, feedbackSnapshot
-  };
-  saved.practice = snapshot;
-  writeLocation(saved);
-  if (activeSet.length) {
-    topicProgress[activePracticeTopic] = JSON.parse(JSON.stringify(snapshot));
-    try { localStorage.setItem(TOPIC_PROGRESS_KEY, JSON.stringify(topicProgress)); }
-    catch { toast(uiText('Não foi possível guardar o andamento neste navegador.','Could not save progress in this browser.')); }
-  }
+const saved = readLocation();
+const snapshot = {
+topic: activePracticeTopic,
+level: practiceMode,
+activeSet, activeIndex, sessionOutcomes, draft: practiceDraft, practiceMode, selectedFamily,
+search: document.getElementById('structure-search').value, feedbackSnapshot
+};
+saved.practice = snapshot;
+writeLocation(saved);
+if (activeSet.length) {
+topicProgress[activePracticeTopic] = JSON.parse(JSON.stringify(snapshot));
+try { localStorage.setItem(TOPIC_PROGRESS_KEY, JSON.stringify(topicProgress)); }
+catch { toast(uiText('Não foi possível guardar o andamento neste navegador.','Could not save progress in this browser.')); }
+}
 }
 function restoreTopicPractice(topic) {
-  const saved = topicProgress[topic];
-  if (!saved || !Array.isArray(saved.activeSet) || !saved.activeSet.length) return false;
-  activePracticeTopic = topic;
-  activeSet = saved.activeSet;
-  activeIndex = Math.min(Math.max(0,saved.activeIndex || 0),activeSet.length);
-  sessionOutcomes = saved.sessionOutcomes || activeSet.map(() => 'pending');
-  practiceMode = saved.practiceMode || 'Iniciante';
-  practiceDraft = saved.draft || '';
-  selectedFamily = saved.selectedFamily || '';
-  feedbackSnapshot = saved.feedbackSnapshot || null;
-  document.getElementById('level-filter').value = saved.level || practiceMode;
-  document.getElementById('structure-search').value = saved.search || '';
-  renderExercise();
-  return true;
+const saved = topicProgress[topic];
+if (!saved || !Array.isArray(saved.activeSet) || !saved.activeSet.length) return false;
+activePracticeTopic = topic;
+activeSet = saved.activeSet;
+activeIndex = Math.min(Math.max(0,saved.activeIndex || 0),activeSet.length);
+sessionOutcomes = saved.sessionOutcomes || activeSet.map(() => 'pending');
+practiceMode = saved.practiceMode || 'Iniciante';
+practiceDraft = saved.draft || '';
+selectedFamily = saved.selectedFamily || '';
+feedbackSnapshot = saved.feedbackSnapshot || null;
+document.getElementById('level-filter').value = saved.level || practiceMode;
+document.getElementById('structure-search').value = saved.search || '';
+renderExercise();
+return true;
 }
 function switchPracticeTopic(topic, startIfEmpty) {
-  savePracticeLocation();
-  ++sessionRequest;
-  activePracticeTopic = topic;
-  document.getElementById('topic-filter').value = topic;
-  activeSet = []; activeIndex = 0; sessionOutcomes = [];
-  practiceDraft = ''; feedbackSnapshot = null;
-  document.getElementById('structure-search').value = '';
-  document.getElementById('exercise-host').innerHTML = '';
-  go('praticar');
-  renderTemplates();
-  const restored = restoreTopicPractice(topic);
-  refreshStructureBrowser();
-  savePracticeLocation();
-  if (!restored && startIfEmpty) startSession(topic);
+savePracticeLocation();
+++sessionRequest;
+activePracticeTopic = topic;
+document.getElementById('topic-filter').value = topic;
+activeSet = []; activeIndex = 0; sessionOutcomes = [];
+practiceDraft = ''; feedbackSnapshot = null;
+document.getElementById('structure-search').value = '';
+document.getElementById('exercise-host').innerHTML = '';
+go('praticar');
+renderTemplates();
+const restored = restoreTopicPractice(topic);
+refreshStructureBrowser();
+savePracticeLocation();
+if (!restored && startIfEmpty) startSession(topic);
 }
 
 function saveReviewLocation() {
-  const saved = readLocation();
-  saved.page = 'revisar';
-  saved.queue = reviewQueue;
-  saved.index = reviewIndex;
-  writeLocation(saved);
+const saved = readLocation();
+saved.page = 'revisar';
+saved.queue = reviewQueue;
+saved.index = reviewIndex;
+writeLocation(saved);
 }
 function clearReviewLocation() {
-  const saved = readLocation();
-  delete saved.queue;
-  delete saved.index;
-  delete saved.draft;
-  writeLocation(saved);
+const saved = readLocation();
+delete saved.queue;
+delete saved.index;
+delete saved.draft;
+writeLocation(saved);
 }
 document.addEventListener('input', event => {
-  if (event.target.id === 'review-answer') {
-    const saved = readLocation();
-    saved.draft = {id:reviewQueue[reviewIndex]?.word.id,text:event.target.value};
-    writeLocation(saved);
-  }
-  if (event.target.id === 'user-answer') {
-    practiceDraft = event.target.value;
-    savePracticeLocation();
-  }
+if (event.target.id === 'review-answer') {
+const saved = readLocation();
+saved.draft = {id?.word.id,text:event.target.value};
+writeLocation(saved);
+}
+if (event.target.id === 'user-answer') {
+practiceDraft = event.target.value;
+savePracticeLocation();
+}
 });
 const savedLocation = readLocation();
 if (savedLocation.page && document.getElementById('page-' + savedLocation.page)) {
-  go(savedLocation.page);
-  if (savedLocation.page === 'revisar' && Array.isArray(savedLocation.queue) && savedLocation.queue.length) {
-    reviewQueue = savedLocation.queue;
-    reviewIndex = Number.isInteger(savedLocation.index) ? savedLocation.index : 0;
-    renderReviewQuiz();
-  }
-  if (savedLocation.page === 'praticar' && savedLocation.practice) {
-    const saved = savedLocation.practice;
-    activePracticeTopic = saved.topic || 'todos';
-    document.getElementById('topic-filter').value = saved.topic || 'todos';
-    document.getElementById('level-filter').value = saved.level || 'todos';
-    renderTemplates();
-    if (Array.isArray(saved.activeSet)) {
-      activeSet = saved.activeSet;
-      activeIndex = Math.min(Math.max(0, saved.activeIndex || 0), activeSet.length);
-      sessionOutcomes = Array.isArray(saved.sessionOutcomes) ? saved.sessionOutcomes : activeSet.map(() => 'pending');
-      practiceDraft = saved.draft || '';
-      practiceMode = saved.practiceMode || 'Iniciante';
-      selectedFamily = saved.selectedFamily || '';
-      feedbackSnapshot = saved.feedbackSnapshot || null;
-      document.getElementById('structure-search').value = saved.search || '';
-      refreshStructureBrowser();
-      if (activeSet.length) renderExercise();
-    }
-  }
+go(savedLocation.page);
+if (savedLocation.page === 'revisar' && Array.isArray(savedLocation.queue) && savedLocation.queue.length) {
+reviewQueue = savedLocation.queue;
+reviewIndex = Number.isInteger(savedLocation.index) ? savedLocation.index : 0;
+renderReviewQuiz();
 }
-
+if (savedLocation.page === 'praticar' && savedLocation.practice) {
+const saved = savedLocation.practice;
+activePracticeTopic = saved.topic || 'todos';
+document.getElementById('topic-filter').value = saved.topic || 'todos';
+document.getElementById('level-filter').value = saved.level || 'todos';
+renderTemplates();
+if (Array.isArray(saved.activeSet)) {
+activeSet = saved.activeSet;
+activeIndex = Math.min(Math.max(0, saved.activeIndex || 0), activeSet.length);
+sessionOutcomes = Array.isArray(saved.sessionOutcomes) ? saved.sessionOutcomes : activeSet.map(() => 'pending');
+practiceDraft = saved.draft || '';
+practiceMode = saved.practiceMode || 'Iniciante';
+selectedFamily = saved.selectedFamily || '';
+feedbackSnapshot = saved.feedbackSnapshot || null;
+document.getElementById('structure-search').value = saved.search || '';
+refreshStructureBrowser();
+if (activeSet.length) renderExercise();
+}
+}
+}
 
 {
-  const list = document.getElementById('home-topics');
-  const track = document.getElementById('topic-scroll-track');
-  const thumb = track.firstElementChild;
-  function syncTopicIndicator() {
-    const height = list.clientHeight;
-    const range = list.scrollHeight - height;
-    track.hidden = !height || range <= 1;
-    if (track.hidden) return;
-    const size = Math.min(height, Math.max(16, height * height / list.scrollHeight));
-    const fraction = Math.min(1, Math.max(0, list.scrollTop / range));
-    thumb.style.height = size + 'px';
-    thumb.style.transform = 'translateY(' + fraction * (height - size) + 'px)';
-  }
-  list.addEventListener('scroll', syncTopicIndicator, { passive: true });
-  new ResizeObserver(syncTopicIndicator).observe(list);
-  new MutationObserver(syncTopicIndicator).observe(list, { childList: true, subtree: true, characterData: true });
-  syncTopicIndicator();
+const list = document.getElementById('home-topics');
+const track = document.getElementById('topic-scroll-track');
+const thumb = track.firstElementChild;
+function syncTopicIndicator() {
+const height = list.clientHeight;
+const range = list.scrollHeight - height;
+track.hidden = !height || range <= 1;
+if (track.hidden) return;
+const size = Math.min(height, Math.max(16, height * height / list.scrollHeight));
+const fraction = Math.min(1, Math.max(0, list.scrollTop / range));
+thumb.style.height = size + 'px';
+thumb.style.transform = 'translateY(' + fraction * (height - size) + 'px)';
+}
+list.addEventListener('scroll', syncTopicIndicator, { passive: true });
+new ResizeObserver(syncTopicIndicator).observe(list);
+new MutationObserver(syncTopicIndicator).observe(list, { childList: true, subtree: true, characterData: true });
+syncTopicIndicator();
 }
 </script>
+
 </body>
 </html>
